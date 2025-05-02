@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Cuentas - Admin</title>
+</head>
+<body>
+
+<h2>Gestión de Cuentas</h2>
+
+<form th:action="@{/admin/accounts}" method="get">
+    <input type="text" name="search" placeholder="Buscar por ID o Usuario" th:value="${search}">
+    <button type="submit">Buscar</button>
+</form>
+
+<br>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Tipo</th>
+        <th>Número de Cuenta</th>  <!-- Nueva columna para el número de cuenta -->
+        <th>Saldo</th>
+        <th>ID Usuario</th>
+        <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="account : ${accounts}">
+        <td th:text="${account.id}">ID</td>
+        <td th:text="${account.accountType.name()}">Tipo</td>
+        <td th:text="${account.accountNumber}">Número de Cuenta</td>  <!-- Mostrar el número de cuenta -->
+        <td th:text="${account.balance}">Saldo</td>
+        <td th:text="${account.userId}">ID Usuario</td>
+        <td>
+            <form th:action="@{/admin/account/delete}" method="post" style="display:inline;">
+                <input type="hidden" name="id" th:value="${account.id}">
+                <button type="submit">Eliminar</button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<br>
+
+<form th:action="@{/admin-dashboard}" method="get">
+    <button type="submit">Volver al Panel</button>
+</form>
+
+</body>
+</html>
+

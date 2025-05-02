@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Administrar Usuarios - Nexpay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="pagina-admin">
+<div class="contenedor-usuarios">
+    <h2 class="titulo">Gestión de Usuarios</h2>
+
+    <!-- Buscar usuario -->
+    <form th:action="@{/admin/users}" method="get" class="formulario-busqueda">
+        <input type="text" name="search" placeholder="Buscar por ID o nombre" th:value="${search}">
+        <button type="submit" class="boton">Buscar</button>
+    </form>
+
+    <br>
+
+    <!-- Tabla de usuarios -->
+    <table class="tabla-usuarios">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>Dirección</th>
+            <th>Saldo total</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${users}">
+            <td th:text="${user.id}">ID</td>
+            <td th:text="${user.name}">Nombre</td>
+            <td th:text="${user.email}">Email</td>
+            <td th:text="${user.phone}">Teléfono</td>
+            <td th:text="${user.address}">Dirección</td>
+            <td th:text="${user.totalBalance}">0.0</td>
+            <td>
+                <form th:action="@{/admin/user/edit}" method="get" style="display:inline;">
+                    <input type="hidden" name="id" th:value="${user.id}">
+                    <button type="submit" class="boton">Editar</button>
+                </form>
+
+                <form th:action="@{/admin/user/delete}" method="post" style="display:inline;"
+                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
+                    <input type="hidden" name="id" th:value="${user.id}">
+                    <button type="submit" class="boton-rojo">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br>
+
+    <form th:action="@{/admin-dashboard}" method="get">
+        <button type="submit" class="boton-secundario">Volver al Panel</button>
+    </form>
+</div>
+</body>
+</html>

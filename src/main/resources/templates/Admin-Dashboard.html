@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel de Administración - Nexpay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="pagina-admin">
+<div class="contenedor-admin">
+    <h2 class="titulo">Panel de Administración</h2>
+
+    <p>Bienvenido, administrador. Desde aquí puedes gestionar todo el sistema Nexpay.</p>
+
+    <nav class="nav-admin">
+        <form th:action="@{/admin/users}" method="get">
+            <button type="submit" class="boton">Gestionar Usuarios</button>
+        </form>
+
+        <form th:action="@{/admin/accounts}" method="get">
+            <button type="submit" class="boton" >Gestionar Cuentas</button>
+        </form>
+
+        <form th:action="@{/admin/transactions}" method="get">
+            <button type="submit" class="boton">Ver Transacciones</button>
+        </form>
+
+        <form th:action="@{/logout}" method="get">
+            <button type="submit" class="boton-secundario">Cerrar sesión</button>
+        </form>
+    </nav>
+</div>
+</body>
+</html>
+
