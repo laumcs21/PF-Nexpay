@@ -63,6 +63,10 @@ public class AccountCRUD implements CRUD<Account>, Serializable {
         return findAccountById(id)
                 .orElseThrow(() -> new IllegalArgumentException("The account is not registered."));
     }
+
+    public Account safeRead(String id) {
+        return findAccountById(id).orElse(null);
+    }
 }
 
 

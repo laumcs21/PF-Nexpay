@@ -19,8 +19,16 @@ public class TransactionManager {
     public void executeTransaction(Transaction transaction) {
         Account source = findAccount(transaction.getSourceAccountNumber());
         if (source == null) {
-            System.out.println("Source account not found.");
-            return;
+            throw new IllegalArgumentException("La cuenta de origen no fue encontrada.");
+        }
+
+        User user = nexpay.getUserCRUD().safeRead(transaction.getUserId());
+        if (user == null) {
+            throw new IllegalArgumentException("Usuario no encontrado.");
+        }
+
+        if (!source.getUserId().equals(user.getId())) {
+            throw new IllegalArgumentException("La cuenta de origen no pertenece al usuario");
         }
 
         switch (transaction.getType()) {
@@ -29,28 +37,27 @@ public class TransactionManager {
                 break;
             case RETIRO:
                 if (source.getBalance() < transaction.getAmount()) {
-                    System.out.println("Insufficient funds for withdrawal.");
-                    return;
+                    throw new IllegalArgumentException("Fondos insuficientes para realizar el retiro.");
                 }
                 source.setBalance(source.getBalance() - transaction.getAmount());
                 break;
             case TRANSFERENCIA:
                 if (source.getBalance() < transaction.getAmount()) {
-                    System.out.println("Insufficient funds for transfer.");
-                    return;
+                    throw new IllegalArgumentException("Fondos insuficientes para realizar la transferencia.");
                 }
                 Account destination = findAccount(transaction.getDestinationAccountNumber());
                 if (destination == null) {
-                    System.out.println("Destination account not found.");
-                    return;
+                    throw new IllegalArgumentException("Cuenta de destino no encontrada.");
+                }
+                if (destination.getAccountNumber().equals(source.getAccountNumber())) {
+                    throw new IllegalArgumentException("No se puede tranferir a la misma cuenta de origen.");
                 }
                 source.setBalance(source.getBalance() - transaction.getAmount());
                 destination.setBalance(destination.getBalance() + transaction.getAmount());
                 accountCRUD.update(destination);
                 break;
             default:
-                System.out.println("Invalid transaction type.");
-                return;
+                throw new IllegalArgumentException("Tipo de transacción no válido.");
         }
 
         accountCRUD.update(source);

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Transacciones - Admin</title>
+</head>
+<body>
+
+<h2>Gestión de Transacciones</h2>
+
+<h3>Crear nueva transacción</h3>
+<form th:action="@{/admin/transactions}" method="post">
+    <label for="userId">ID Usuario:</label>
+    <input type="text" id="userId" name="userId" required><br>
+
+    <label for="sourceAccountNumber">Cuenta origen:</label>
+    <input type="text" id="sourceAccountNumber" name="sourceAccountNumber" required><br>
+
+    <label for="destinationAccountNumber">Cuenta destino (solo para transferencias):</label>
+    <input type="text" id="destinationAccountNumber" name="destinationAccountNumber"><br>
+
+    <label for="type">Tipo:</label>
+    <select id="type" name="type">
+        <option value="DEPOSITO">Depósito</option>
+        <option value="RETIRO">Retiro</option>
+        <option value="TRANSFERENCIA">Transferencia</option>
+    </select><br>
+
+    <label for="amount">Monto:</label>
+    <input type="number" id="amount" name="amount" step="0.01" required><br>
+
+    <label for="description">Descripción:</label>
+    <input type="text" id="description" name="description"><br>
+
+    <button type="submit">Ejecutar Transacción</button>
+</form>
+
+<form th:action="@{/admin/transactions}" method="get">
+    <input type="text" name="search" placeholder="Buscar por ID" th:value="${search}">
+    <button type="submit">Buscar</button>
+</form>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Fecha</th>
+        <th>Tipo</th>
+        <th>Monto</th>
+        <th>Cuenta Origen</th>
+        <th>Cuenta Destino</th>
+        <th>ID Usuario</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="transaction : ${transactions}">
+        <td th:text="${transaction.id}">ID</td>
+        <td th:text="${transaction.date}">Fecha</td>
+        <td th:text="${transaction.type}">Tipo</td>
+        <td th:text="${transaction.amount}">Monto</td>
+        <td th:text="${transaction.sourceAccountNumber}">Origen</td>
+        <td th:text="${transaction.destinationAccountNumber}">Destino</td>
+        <td th:text="${transaction.userId}">Usuario</td>
+    </tr>
+    </tbody>
+</table>
+
+<form th:action="@{/admin/transactions/undo}" method="post">
+    <button type="submit">Revertir Última Transacción</button>
+</form>
+
+<form th:action="@{/admin-dashboard}" method="get">
+    <button type="submit" class="boton-secundario">Volver al Panel</button>
+</form>
+
+<div th:if="${errorMessage}" style="color: red; font-weight: bold;">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+</body>
+</html>

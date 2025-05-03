@@ -8,19 +8,38 @@
 
 <h2>Gestión de Cuentas</h2>
 
+<div th:if="${param.error != null and param.error[0] == 'userNotFound'}" style="color:red; font-weight:bold;">
+    Error: El usuario no está registrado.
+</div>
+
+<h3>Crear nueva cuenta</h3>
+<form th:action="@{/admin/accounts}" method="post">
+    <label for="userId">ID Usuario:</label>
+    <input type="text" id="userId" name="userId" required><br>
+
+    <label for="bankName">Banco:</label>
+    <input type="text" id="bankName" name="bankName" required><br>
+
+    <label for="accountType">Tipo de Cuenta:</label>
+    <select id="accountType" name="accountType">
+        <option value="AHORRO">Ahorro</option>
+        <option value="CORRIENTE">Corriente</option>
+    </select><br>
+
+    <button type="submit">Crear Cuenta</button>
+</form>
+
 <form th:action="@{/admin/accounts}" method="get">
     <input type="text" name="search" placeholder="Buscar por ID o Usuario" th:value="${search}">
     <button type="submit">Buscar</button>
 </form>
-
-<br>
 
 <table border="1">
     <thead>
     <tr>
         <th>ID</th>
         <th>Tipo</th>
-        <th>Número de Cuenta</th>  <!-- Nueva columna para el número de cuenta -->
+        <th>Número de Cuenta</th>
         <th>Saldo</th>
         <th>ID Usuario</th>
         <th>Acciones</th>
@@ -30,10 +49,13 @@
     <tr th:each="account : ${accounts}">
         <td th:text="${account.id}">ID</td>
         <td th:text="${account.accountType.name()}">Tipo</td>
-        <td th:text="${account.accountNumber}">Número de Cuenta</td>  <!-- Mostrar el número de cuenta -->
+        <td th:text="${account.accountNumber}">Número de Cuenta</td>
         <td th:text="${account.balance}">Saldo</td>
         <td th:text="${account.userId}">ID Usuario</td>
         <td>
+            <!-- Enlace para editar -->
+            <a th:href="@{/admin/accounts?editId={id}(id=${account.id})}">Editar</a>
+            <!-- Enlace para eliminar -->
             <form th:action="@{/admin/account/delete}" method="post" style="display:inline;">
                 <input type="hidden" name="id" th:value="${account.id}">
                 <button type="submit">Eliminar</button>
@@ -43,12 +65,39 @@
     </tbody>
 </table>
 
-<br>
+<div th:if="${accountToEdit != null}">
+    <h3>Editar Cuenta</h3>
+    <form th:action="@{/admin/account/update}" method="post" th:object="${accountToEdit}">
+        <input type="hidden" th:field="*{id}" />
 
-<form th:action="@{/admin-dashboard}" method="get">
-    <button type="submit">Volver al Panel</button>
-</form>
+        <label for="editUserId">ID Usuario:</label>
+        <input type="text" id="editUserId" th:field="*{userId}" readonly/><br>
+
+        <label for="editBankName">Banco:</label>
+        <input type="text" id="editBankName" th:field="*{bankName}" required/><br>
+
+        <label for="editAccountType">Tipo de Cuenta:</label>
+        <select id="editAccountType" th:field="*{accountType}">
+            <option value="AHORRO" th:selected="${accountToEdit.accountType == 'AHORRO'}">Ahorro</option>
+            <option value="CORRIENTE" th:selected="${accountToEdit.accountType == 'CORRIENTE'}">Corriente</option>
+        </select><br>
+
+        <label for="editAccountNumber">Número de Cuenta:</label>
+        <input type="text" id="editAccountNumber" th:field="*{accountNumber}" readonly/><br>
+
+        <label for="editBalance">Saldo:</label>
+        <input type="number" id="editBalance" th:field="*{balance}" readonly/><br>
+
+        <button type="submit">Actualizar Cuenta</button>
+    </form>
+</div>
 
 </body>
 </html>
+
+
+
+
+
+
 
