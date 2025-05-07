@@ -47,6 +47,33 @@ public class AdminDashboardController {
         return "admin-users";
     }
 
+    @PostMapping("/admin/user/create")
+    public String createUser(@RequestParam String id,
+                             @RequestParam String name,
+                             @RequestParam String email,
+                             @RequestParam String phone,
+                             @RequestParam String address,
+                             @RequestParam String password,
+                             RedirectAttributes redirectAttributes) {
+
+        if (!Session.isAdmin()) return "redirect:/login";
+
+        if (nexpay.getUserCRUD().safeRead(id) != null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Ya existe un usuario con esa cédula.");
+            return "redirect:/admin/users";
+        }
+
+        double totalBalance = 0.0;
+        User newUser = new User(id, password, name, email, phone, address, totalBalance);
+
+        nexpay.getUserCRUD().create(newUser);
+
+        redirectAttributes.addFlashAttribute("successMessage", "Usuario creado exitosamente.");
+        return "redirect:/admin/users";
+    }
+
+
+
     @PostMapping("/admin/user/delete")
     public String deleteUser(@RequestParam String id) {
         if (!Session.isAdmin()) return "redirect:/login";
@@ -105,7 +132,6 @@ public class AdminDashboardController {
             }
         }
 
-        // Si se pasa un editId, agregamos al modelo el objeto account correspondiente
         if (editId != null) {
             Account accountToEdit = nexpay.getAccountCRUD().safeRead(editId);
             model.addAttribute("accountToEdit", accountToEdit);

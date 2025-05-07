@@ -67,10 +67,10 @@ public class TransactionManager {
         System.out.println("Transaction executed successfully.");
     }
 
-    public void undoLastTransaction() {
+    public boolean undoLastTransaction() {
         if (transactionStack.isEmpty()) {
             System.out.println("No transactions to undo.");
-            return;
+            return false;
         }
 
         Transaction transaction = transactionStack.pop();
@@ -92,15 +92,19 @@ public class TransactionManager {
                     destination.setBalance(destination.getBalance() - transaction.getAmount());
                     accountCRUD.update(source);
                     accountCRUD.update(destination);
+                } else {
+                    System.out.println("Cuenta de destino no encontrada. No se puede revertir.");
+                    return false;
                 }
                 break;
             default:
-                System.out.println("Invalid transaction type for undo.");
-                return;
+                System.out.println("Tipo de transacción inválido.");
+                return false;
         }
 
         transactionCRUD.delete(transaction.getId());
         System.out.println("Transaction reverted successfully.");
+        return true;
     }
 
     private Account findAccount(String accountNumber) {

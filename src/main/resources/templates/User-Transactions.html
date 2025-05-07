@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Transacciones - Nexpay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="pagina-usuario">
+<div class="contenedor-transacciones">
+    <h2 class="titulo">Historial de Transacciones</h2>
+
+    <p th:if="${successMessage}" class="mensaje-exito" th:text="${successMessage}"></p>
+    <p th:if="${errorMessage}" class="mensaje-error" th:text="${errorMessage}"></p>
+
+    <table class="tabla-transacciones">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Fecha</th>
+            <th>Tipo</th>
+            <th>Monto</th>
+            <th>Cuenta Origen</th>
+            <th>Cuenta Destino</th>
+            <th>Descripción</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="tx : ${transactions}">
+            <td th:text="${tx.id}">ID</td>
+            <td th:text="${tx.date}">Fecha</td>
+            <td th:text="${tx.type}">Tipo</td>
+            <td th:text="${tx.amount}">Monto</td>
+            <td th:text="${tx.sourceAccountNumber}">Origen</td>
+            <td th:text="${tx.destinationAccountNumber}">Destino</td>
+            <td th:text="${tx.description}">Descripción</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form th:action="@{/user/transactions/undo}" method="post">
+        <button type="submit" class="boton-rojo">Revertir Última Transacción</button>
+    </form>
+
+    <br>
+
+    <form th:action="@{/dashboard}" method="get">
+        <button type="submit" class="boton-secundario">Volver al Panel</button>
+    </form>
+</div>
+</body>
+</html>

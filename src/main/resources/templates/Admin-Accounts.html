@@ -89,6 +89,9 @@
         <input type="number" id="editBalance" th:field="*{balance}" readonly/><br>
 
         <button type="submit">Actualizar Cuenta</button>
+        <form th:action="@{/admin-dashboard}" method="get">
+            <button type="submit" class="boton-secundario">Volver al Panel</button>
+        </form>
     </form>
 </div>
 

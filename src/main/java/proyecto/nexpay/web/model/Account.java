@@ -9,14 +9,14 @@ public class Account implements Serializable {
     private String bankName;
     private String accountNumber;
     private AccountType accountType;
-    private double balance;
+    private Double balance;
 
     public static long getSerialversionuid() {
         return serialVersionUID;
     }
 
     public Account(String userId, String id, String bankName, String accountNumber, AccountType accountType,
-                   double balance) {
+                   Double balance) {
         this.userId = userId;
         this.id = id;
         this.bankName = bankName;

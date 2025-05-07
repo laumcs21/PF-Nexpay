@@ -2,6 +2,7 @@ package proyecto.nexpay.web.model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Transaction implements Serializable {
 
@@ -14,6 +15,7 @@ public class Transaction implements Serializable {
     private String description;
     private String sourceAccountNumber;
     private String destinationAccountNumber;
+    private LocalDateTime scheduledDate;
 
     public Transaction(Builder builder) {
         this.userId = builder.userId;
@@ -24,6 +26,7 @@ public class Transaction implements Serializable {
         this.description = builder.description;
         this.sourceAccountNumber = builder.sourceAccountNumber;
         this.destinationAccountNumber = builder.destinationAccountNumber;
+        this.scheduledDate = builder.scheduledDate;
     }
 
     public String getUserId() {
@@ -86,6 +89,14 @@ public class Transaction implements Serializable {
         return destinationAccountNumber;
     }
 
+    public LocalDateTime getScheduledDate() {
+        return scheduledDate;
+    }
+
+    public void setScheduledDate(LocalDateTime scheduledDate) {
+        this.scheduledDate = scheduledDate;
+    }
+
     public void setDestinationAccountNumber(String destinationAccountNumber) {
         this.destinationAccountNumber = destinationAccountNumber;
     }
@@ -100,6 +111,7 @@ public class Transaction implements Serializable {
         private String description;
         private String sourceAccountNumber;
         private String destinationAccountNumber;
+        private LocalDateTime scheduledDate;
 
         public Builder(String userId, String id, LocalDate date, TransactionType type, double amount,
                        String sourceAccountNumber) {
@@ -118,6 +130,11 @@ public class Transaction implements Serializable {
 
         public Builder withDescription(String description) {
             this.description = description;
+            return this;
+        }
+
+        public Builder withScheduledDate(LocalDateTime scheduledDate) {
+            this.scheduledDate = scheduledDate;
             return this;
         }
 

@@ -9,6 +9,19 @@
 <div class="contenedor-usuarios">
     <h2 class="titulo">Gestión de Usuarios</h2>
 
+    <form th:action="@{/admin/user/create}" method="post" class="formulario-crear">
+        <h3>Crear Nuevo Usuario</h3>
+        <input type="text" name="id" placeholder="Cédula (ID)" required>
+        <input type="text" name="name" placeholder="Nombre" required>
+        <input type="email" name="email" placeholder="Correo electrónico" required>
+        <input type="text" name="phone" placeholder="Teléfono" required>
+        <input type="text" name="address" placeholder="Dirección" required>
+        <input type="password" name="password" placeholder="Contraseña" required>
+        <button type="submit" class="boton">Crear Usuario</button>
+    </form>
+
+    <br>
+
     <form th:action="@{/admin/users}" method="get" class="formulario-busqueda">
         <input type="text" name="search" placeholder="Buscar por ID o nombre" th:value="${search}">
         <button type="submit" class="boton">Buscar</button>
@@ -57,6 +70,10 @@
     <form th:action="@{/admin-dashboard}" method="get">
         <button type="submit" class="boton-secundario">Volver al Panel</button>
     </form>
+
+    <div th:if="${errorMessage}" style="color: red; font-weight: bold;">
+        <p th:text="${errorMessage}"></p>
+    </div>
 </div>
 </body>
 </html>

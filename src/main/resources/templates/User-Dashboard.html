@@ -10,15 +10,15 @@
     <h2 class="titulo">Bienvenido, <span th:text="${name}">Usuario</span>!</h2>
     <p>Tu saldo total es: <strong>$<span th:text="${totalBalance}">0.0</span></strong></p>
 
-    <form th:action="@{/accounts}" method="get">
+    <form th:action="@{/user/accounts}" method="get">
         <button type="submit" class="boton">Ver Cuentas</button>
     </form>
 
-    <form th:action="@{/transactions}" method="get">
-        <button type="submit" class="boton">Ver Transacciones</button>
+    <form th:action="@{/user/transactions}" method="get">
+        <button type="submit" class="boton">Historial de Transacciones</button>
     </form>
 
-    <form th:action="@{/make-transaction}" method="get">
+    <form th:action="@{/user/transactions/new}" method="get">
         <button type="submit" class="boton">Realizar Transacción</button>
     </form>
 
