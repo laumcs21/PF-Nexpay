@@ -1,30 +1,47 @@
 package proyecto.nexpay.web.service;
 
+import proyecto.nexpay.web.datastructures.DoubleLinkedList;
 import proyecto.nexpay.web.datastructures.PriorityQueue;
 import proyecto.nexpay.web.model.Transaction;
+import proyecto.nexpay.web.persistence.TransactionPersistence;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class ScheduleTransactionManager {
-
     private TransactionManager transactionManager;
     private PriorityQueue<ScheduledTransaction> scheduledTransactions;
+    TransactionPersistence Pt = TransactionPersistence.getInstance();
 
     public ScheduleTransactionManager(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
         this.scheduledTransactions = new PriorityQueue<>();
+        loadScheduledTransactions();  // Cargar transacciones al iniciar el sistema
     }
 
     public void scheduleTransaction(Transaction transaction, LocalDateTime date) {
-        scheduledTransactions.enqueue(new ScheduledTransaction(transaction, date));
+        ScheduledTransaction scheduledTransaction = new ScheduledTransaction(transaction, date);
+        scheduledTransactions.enqueue(scheduledTransaction);
+        Pt.saveScheduledTransaction(scheduledTransaction);
         System.out.println("Transaction scheduled for: " + date);
     }
 
     public void processScheduledTransactions() {
         LocalDateTime today = LocalDateTime.now();
-        while (!scheduledTransactions.isEmpty() && !scheduledTransactions.getHead().getData().getScheduledDate().isAfter(today)) {
-            ScheduledTransaction scheduled = scheduledTransactions.dequeue();
-            transactionManager.executeTransaction(scheduled.getTransaction());
+        System.out.println("Checking scheduled transactions at: " + today);
+
+        while (!scheduledTransactions.isEmpty()) {
+            ScheduledTransaction scheduled = scheduledTransactions.getHead().getData();
+            System.out.println("Scheduled for: " + scheduled.getScheduledDate());
+
+            if (!scheduled.getScheduledDate().isAfter(today)) {
+                transactionManager.executeTransaction(scheduled.getTransaction());
+                scheduledTransactions.dequeue();
+                System.out.println("Executed transaction: " + scheduled.getTransaction());
+            } else {
+                System.out.println("Transaction not yet scheduled: " + scheduled.getTransaction());
+                break;
+            }
         }
     }
 
@@ -33,4 +50,20 @@ public class ScheduleTransactionManager {
             System.out.println(st);
         }
     }
+
+    private void loadScheduledTransactions() {
+        try {
+            DoubleLinkedList<ScheduledTransaction> loadedTransactions = Pt.loadScheduledTransactions();
+            for (ScheduledTransaction st : loadedTransactions) {
+                scheduledTransactions.enqueue(st);
+            }
+        } catch (IOException e) {
+            System.err.println("Error loading scheduled transactions: " + e.getMessage());
+        }
+    }
 }
+
+
+
+
+

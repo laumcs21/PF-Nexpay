@@ -1,4 +1,4 @@
 003@@1111@@Bryan Cárdenas Saavedra@@braycsfut@gmail.com@@3023578426@@villa carolina@@0.0
 004@@1111@@Cesar Túlcan@@cesar@gmail.com@@654321@@norte@@0.0
-001@@1111@@Jefferson Rodriguez@@jeff@gmail.com@@12345@@salento@@70000.0
 002@@1111@@laura cardenas@@laura@example.com@@3007654321@@Carrera 45@@2145000.0
+001@@1111@@Jefferson Rodriguez@@jeff@gmail.com@@12345@@salento@@200000.0

@@ -9,6 +9,7 @@ import proyecto.nexpay.web.persistence.TransactionPersistence;
 import proyecto.nexpay.web.datastructures.SimpleList;
 import proyecto.nexpay.web.datastructures.DoubleLinkedList;
 import proyecto.nexpay.web.service.ScheduleTransactionManager;
+import proyecto.nexpay.web.service.ScheduledTransactionExecutor;
 import proyecto.nexpay.web.service.TransactionManager;
 
 public class Nexpay implements Serializable {
@@ -26,6 +27,7 @@ public class Nexpay implements Serializable {
 
     private TransactionManager TManager;
     private ScheduleTransactionManager SManager;
+    private ScheduledTransactionExecutor executor;
 
     private Thread backupThread;
 
@@ -39,6 +41,7 @@ public class Nexpay implements Serializable {
         this.transactionCRUD = new TransactionCRUD(this);
         this.TManager = new TransactionManager(this);
         this.SManager = new ScheduleTransactionManager(TManager);
+        this.executor = new ScheduledTransactionExecutor(SManager);
     }
 
     public static Nexpay getInstance() {
@@ -49,6 +52,7 @@ public class Nexpay implements Serializable {
                     instance.loadUserData();
                     instance.loadAccountData();
                     instance.loadTransactionData();
+                    instance.executor.start();
                 }
             }
         }

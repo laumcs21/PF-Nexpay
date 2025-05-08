@@ -60,12 +60,31 @@ public class TransactionManager {
                 throw new IllegalArgumentException("Tipo de transacción no válido.");
         }
 
+        // Actualizar el saldo de la cuenta de origen
         accountCRUD.update(source);
+
+        // Recalcular el total balance del usuario
+        double totalBalance = 0.0;
+        for (Account account : nexpay.getAccounts()) {
+            if (account.getUserId().equals(user.getId())) {
+                totalBalance += account.getBalance();
+            }
+        }
+
+        // Actualizar el total balance del usuario
+        user.setTotalBalance(totalBalance);
+
+        nexpay.getUserCRUD().update(user);
+
+        // Crear la transacción y guardarla en la persistencia
         transactionCRUD.create(transaction);
         transactionStack.push(transaction);
 
         System.out.println("Transaction executed successfully.");
+        System.out.println("Total balance for user " + user.getId() + ": " + totalBalance);
     }
+
+
 
     public boolean undoLastTransaction() {
         if (transactionStack.isEmpty()) {
