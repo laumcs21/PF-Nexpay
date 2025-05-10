@@ -1,29 +1,25 @@
 package proyecto.nexpay.web;
 
-import proyecto.nexpay.web.model.*;
+import proyecto.nexpay.web.persistence.TransactionPersistence;
+import proyecto.nexpay.web.model.Transaction;
+import proyecto.nexpay.web.model.Nexpay;
+import proyecto.nexpay.web.model.TransactionType;
+import proyecto.nexpay.web.datastructures.DoubleLinkedList;
 import proyecto.nexpay.web.service.*;
-import proyecto.nexpay.web.persistence.*;
-import proyecto.nexpay.web.datastructures.*;
-import java.time.LocalDateTime;
 
-import java.time.LocalDate;
 
 public class main {
 
     public static void main(String[] args) {
-        Nexpay nexpay = Nexpay.getInstance();
+        EmailSender emailSender = new EmailSender();
 
-        LocalDateTime scheduledTime = LocalDateTime.of(2025, 5, 8, 16, 0, 0, 0);
+        String destinatario = "laumcs21@gmail.com";
+        String subject = "Correo de prueba";
+        String messageBody = "Este es un correo de prueba para verificar el EmailSender.";
 
-        Transaction transaction = new Transaction.Builder("001", "trans002", LocalDate.now(), TransactionType.DEPOSITO, 100000, "4355760746")
-                .withScheduledDate(scheduledTime)
-                .build();
-        nexpay.getSManager().scheduleTransaction(transaction, scheduledTime);
+        emailSender.sendNotification(destinatario, subject, messageBody);
 
-        System.out.println("Scheduled Transactions: ");
-        nexpay.getSManager().printScheduledTransactions();
-
-        nexpay.getSManager().processScheduledTransactions();
+        System.out.println("Correo enviado a: " + destinatario);
     }
 }
 

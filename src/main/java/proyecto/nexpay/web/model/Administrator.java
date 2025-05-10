@@ -19,7 +19,7 @@ public class Administrator extends Person implements Serializable {
                     "1001198723",
                     "1111",
                     "Laura Milena Cardenas",
-                    "Laumcs21@gmail.com",
+                    "lauram.cardenass@uqvirtual.edu.co",
                     "3003710163",
                     "Villa carolina primera etapa mz.M #12");
         }

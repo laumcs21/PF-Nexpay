@@ -6,10 +6,10 @@ import java.util.concurrent.TimeUnit;
 
 public class ScheduledTransactionExecutor {
 
-    private final ScheduleTransactionManager scheduleTransactionManager;
+    private final ScheduledTransactionManager scheduleTransactionManager;
     private final ScheduledExecutorService scheduler;
 
-    public ScheduledTransactionExecutor(ScheduleTransactionManager scheduleTransactionManager) {
+    public ScheduledTransactionExecutor(ScheduledTransactionManager scheduleTransactionManager) {
         this.scheduleTransactionManager = scheduleTransactionManager;
         this.scheduler = Executors.newScheduledThreadPool(1);
     }

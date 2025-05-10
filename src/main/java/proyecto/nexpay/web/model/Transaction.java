@@ -149,16 +149,13 @@ public class Transaction implements Serializable {
 
     @Override
     public String toString() {
-        return "Transaction{" +
-                "userId='" + userId + '\'' +
-                ", transactionCode='" + id + '\'' +
+        return  "Datos de la transacción: transactionCode='" + id + '\'' +
                 ", date=" + date +
                 ", transactionType=" + type +
                 ", amount=" + amount +
                 ", sourceAccountNumber='" + sourceAccountNumber + '\'' +
                 (destinationAccountNumber != null ? ", destinationAccountNumber='" + destinationAccountNumber + '\'' : "") +
-                (description != null ? ", description='" + description + '\'' : "") +
-                '}';
+                (description != null ? ", description='" + description + '\'' : "");
     }
 }
 

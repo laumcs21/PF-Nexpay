@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 
 import proyecto.nexpay.web.model.Transaction;
 import proyecto.nexpay.web.model.TransactionType;
@@ -56,7 +57,6 @@ public class TransactionPersistence {
         }
     }
 
-    // Cargar todas las transacciones (regulares)
     public DoubleLinkedList<Transaction> loadTransactions() throws IOException {
         DoubleLinkedList<Transaction> transactions = new DoubleLinkedList<>();
         File file = new File(TEXT_FILE_PATH);
@@ -112,7 +112,6 @@ public class TransactionPersistence {
     public void saveScheduledTransaction(ScheduledTransaction scheduledTransaction) {
         StringBuilder scheduledTransactionText = new StringBuilder();
 
-        // Obtener la transacción programada y construir el texto para guardarla
         Transaction transaction = scheduledTransaction.getTransaction();
         scheduledTransactionText.append(transaction.getUserId()).append("@@")
                 .append(transaction.getId()).append("@@")
@@ -129,13 +128,45 @@ public class TransactionPersistence {
         }
         scheduledTransactionText.append("\n");
 
-        // Guardar solo la transacción programada en el archivo (añadir al final del archivo)
         try {
             FileUtil.saveFile(SCHEDULED_TEXT_FILE_PATH, scheduledTransactionText.toString(), true);  // 'true' para añadir al final
         } catch (IOException e) {
             System.err.println("Error saving scheduled transaction: " + e.getMessage());
         }
     }
+
+    public void saveScheduledTransactions(DoubleLinkedList<ScheduledTransaction> scheduledTransactions) {
+        StringBuilder scheduledTransactionText = new StringBuilder();
+
+        for (ScheduledTransaction scheduledTransaction : scheduledTransactions) {
+            Transaction current = scheduledTransaction.getTransaction();
+
+            scheduledTransactionText.append(current.getUserId()).append("@@")
+                    .append(current.getId()).append("@@")
+                    .append(current.getScheduledDate()).append("@@")
+                    .append(current.getType()).append("@@")
+                    .append(current.getAmount()).append("@@")
+                    .append(current.getSourceAccountNumber()).append("@@");
+
+            if (current.getDestinationAccountNumber() != null) {
+                scheduledTransactionText.append("destination=").append(current.getDestinationAccountNumber()).append("@@");
+            }
+
+            if (current.getDescription() != null) {
+                scheduledTransactionText.append("description=").append(current.getDescription()).append("@@");
+            }
+
+            scheduledTransactionText.append("\n");
+        }
+
+        try {
+            FileUtil.saveFile(SCHEDULED_TEXT_FILE_PATH, scheduledTransactionText.toString(), false);  // 'false' para sobrescribir
+            System.out.println("Scheduled transactions saved successfully.");
+        } catch (IOException e) {
+            System.err.println("Error saving scheduled transactions: " + e.getMessage());
+        }
+    }
+
 
     public DoubleLinkedList<ScheduledTransaction> loadScheduledTransactions() throws IOException {
         DoubleLinkedList<ScheduledTransaction> scheduledTransactions = new DoubleLinkedList<>();
@@ -150,36 +181,30 @@ public class TransactionPersistence {
             System.out.println("Error creating scheduled transactions file");
         }
 
-        // Leer todas las líneas del archivo
         for (String scheduledTransactionText : FileUtil.readFile(SCHEDULED_TEXT_FILE_PATH)) {
             scheduledTransactionText = scheduledTransactionText.trim();
 
-            // Saltar líneas vacías
             if (scheduledTransactionText.isEmpty()) {
                 continue;
             }
 
             String[] split = scheduledTransactionText.split("@@");
 
-            // Verificar que la línea tenga al menos 6 campos
-            if (split.length < 6) {  // Al menos los campos básicos deben estar presentes
+            if (split.length < 6) {
                 System.err.println("Invalid or incomplete line: " + scheduledTransactionText);
-                continue; // Ignorar esta línea y pasar a la siguiente
+                continue;
             }
 
             try {
                 String userId = split[0];
-                String scheduledDateText = split[2] + "T10:00:00";  // Agregar hora por defecto si no está presente
+                String scheduledDateText = split[2] + "T10:00:00";
                 LocalDateTime scheduledDate = LocalDateTime.parse(scheduledDateText);
 
-                // Validar si el tipo de transacción es válido
                 TransactionType type = TransactionType.valueOf(split[3]);
 
-                // Crear el builder de la transacción
                 Transaction.Builder builder = new Transaction.Builder(
                         userId, split[1], scheduledDate.toLocalDate(), type, Double.parseDouble(split[4]), split[5]);
 
-                // Si hay campos opcionales, añadirlos si están presentes
                 if (split.length > 6) {
                     for (int i = 6; i < split.length; i++) {
                         if (split[i].startsWith("destination=")) {
@@ -194,62 +219,45 @@ public class TransactionPersistence {
                     }
                 }
 
-                // Crear la transacción y añadirla a la cola
                 Transaction transaction = builder.build();
                 ScheduledTransaction scheduledTransaction = new ScheduledTransaction(transaction, scheduledDate);
                 scheduledTransactions.addLast(scheduledTransaction);
 
             } catch (Exception e) {
-                System.err.println("Error processing line: " + scheduledTransactionText);
+                //System.err.println("Error processing line: " + scheduledTransactionText);
             }
         }
 
         return scheduledTransactions;
     }
 
-
-
-    public void saveTransactionToXML(Transaction transaction) {
+    public synchronized void removeScheduledTransaction(String transactionId) {
+        DoubleLinkedList<ScheduledTransaction> scheduledTransactions = null;
         try {
-            DoubleLinkedList<Transaction> transactions = loadTransactionsFromXML();
-            transactions.addLast(transaction);
-            FileUtil.saveSerializedXMLResource(XML_FILE_PATH, transactions);
+            scheduledTransactions = loadScheduledTransactions();
         } catch (IOException e) {
-            System.out.println("Error saving transaction to XML: " + e.getMessage());
+            System.err.println("Error loading scheduled transactions: " + e.getMessage());
+            return;
         }
+
+        boolean removed = false;
+        Iterator<ScheduledTransaction> iterator = scheduledTransactions.iterator();
+        while (iterator.hasNext()) {
+            ScheduledTransaction scheduledTransaction = iterator.next();
+
+            if (scheduledTransaction.getTransaction().getId().equals(transactionId)) {
+                iterator.remove();
+                removed = true;
+                break;
+            }
+        }
+        if (!removed) {
+            System.out.println("Transaction with ID " + transactionId + " not found.");
+            return;
+        }
+        saveScheduledTransactions(scheduledTransactions);
     }
 
-    public DoubleLinkedList<Transaction> loadTransactionsFromXML() {
-        try {
-            return (DoubleLinkedList<Transaction>) FileUtil.loadSerializedXMLResource(XML_FILE_PATH);
-        } catch (IOException e) {
-            System.err.println("Error loading transactions from XML file: " + e.getMessage());
-            return new DoubleLinkedList<>();
-        } catch (ClassCastException e) {
-            System.err.println("Type cast error loading transactions from XML: " + e.getMessage());
-            return new DoubleLinkedList<>();
-        }
-    }
-
-    public void saveTransactionToBinary(Transaction transaction) {
-        try {
-            DoubleLinkedList<Transaction> transactions = loadTransactionsFromBinary();
-            transactions.addLast(transaction);
-            FileUtil.saveSerializedResource(BINARY_FILE_PATH, transactions);
-            System.out.println("Record saved in binary: " + transaction);
-        } catch (Exception e) {
-            System.out.println("Error saving transactions in binary: " + e.getMessage());
-        }
-    }
-
-    private DoubleLinkedList<Transaction> loadTransactionsFromBinary() {
-        try {
-            return (DoubleLinkedList<Transaction>) FileUtil.loadSerializedResource(BINARY_FILE_PATH);
-        } catch (Exception e) {
-            System.out.println("Error loading transactions from binary: " + e.getMessage());
-            return new DoubleLinkedList<>();
-        }
-    }
 }
 
 

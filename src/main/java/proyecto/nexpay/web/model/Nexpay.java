@@ -8,9 +8,10 @@ import proyecto.nexpay.web.persistence.AccountPersistence;
 import proyecto.nexpay.web.persistence.TransactionPersistence;
 import proyecto.nexpay.web.datastructures.SimpleList;
 import proyecto.nexpay.web.datastructures.DoubleLinkedList;
-import proyecto.nexpay.web.service.ScheduleTransactionManager;
+import proyecto.nexpay.web.service.ScheduledTransactionManager;
 import proyecto.nexpay.web.service.ScheduledTransactionExecutor;
 import proyecto.nexpay.web.service.TransactionManager;
+import proyecto.nexpay.web.service.NotificationManager;
 
 public class Nexpay implements Serializable {
 
@@ -26,12 +27,12 @@ public class Nexpay implements Serializable {
     private TransactionCRUD transactionCRUD;
 
     private TransactionManager TManager;
-    private ScheduleTransactionManager SManager;
+    private ScheduledTransactionManager SManager;
     private ScheduledTransactionExecutor executor;
 
     private Thread backupThread;
 
-    private Nexpay() {
+    private Nexpay(NotificationManager notificationManager) {
         this.users = new SimpleList<>();
         this.accounts = new SimpleList<>();
         this.transactions = new DoubleLinkedList<>();
@@ -39,8 +40,11 @@ public class Nexpay implements Serializable {
         this.userCRUD = new UserCRUD(this);
         this.accountCRUD = new AccountCRUD(this);
         this.transactionCRUD = new TransactionCRUD(this);
+
+        // Inyectar NotificationManager en TransactionManager
         this.TManager = new TransactionManager(this);
-        this.SManager = new ScheduleTransactionManager(TManager);
+
+        this.SManager = new ScheduledTransactionManager(TManager);
         this.executor = new ScheduledTransactionExecutor(SManager);
     }
 
@@ -48,7 +52,8 @@ public class Nexpay implements Serializable {
         if (instance == null) {
             synchronized (Nexpay.class) {
                 if (instance == null) {
-                    instance = new Nexpay();
+                    NotificationManager notificationManager = new NotificationManager(instance);
+                    instance = new Nexpay(notificationManager);
                     instance.loadUserData();
                     instance.loadAccountData();
                     instance.loadTransactionData();
@@ -58,6 +63,7 @@ public class Nexpay implements Serializable {
         }
         return instance;
     }
+
 
     public SimpleList<User> getUsers() {
         return users;
@@ -111,7 +117,7 @@ public class Nexpay implements Serializable {
         return TManager;
     }
 
-    public ScheduleTransactionManager getSManager() {
+    public ScheduledTransactionManager getSManager() {
         return SManager;
     }
 
@@ -148,5 +154,7 @@ public class Nexpay implements Serializable {
         }
     }
 }
+
+
 
 

@@ -8,15 +8,19 @@ import proyecto.nexpay.web.persistence.TransactionPersistence;
 import java.io.IOException;
 import java.time.LocalDateTime;
 
-public class ScheduleTransactionManager {
+public class ScheduledTransactionManager {
     private TransactionManager transactionManager;
     private PriorityQueue<ScheduledTransaction> scheduledTransactions;
     TransactionPersistence Pt = TransactionPersistence.getInstance();
 
-    public ScheduleTransactionManager(TransactionManager transactionManager) {
+    public PriorityQueue<ScheduledTransaction> getScheduledTransactions() {
+        return scheduledTransactions;
+    }
+
+    public ScheduledTransactionManager(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
         this.scheduledTransactions = new PriorityQueue<>();
-        loadScheduledTransactions();  // Cargar transacciones al iniciar el sistema
+        loadScheduledTransactions();
     }
 
     public void scheduleTransaction(Transaction transaction, LocalDateTime date) {
@@ -35,15 +39,23 @@ public class ScheduleTransactionManager {
             System.out.println("Scheduled for: " + scheduled.getScheduledDate());
 
             if (!scheduled.getScheduledDate().isAfter(today)) {
-                transactionManager.executeTransaction(scheduled.getTransaction());
-                scheduledTransactions.dequeue();
-                System.out.println("Executed transaction: " + scheduled.getTransaction());
+                try {
+                    transactionManager.executeTransaction(scheduled.getTransaction());
+                    scheduledTransactions.dequeue();
+                    //Pt.removeScheduledTransaction(scheduled.getTransaction().getId());
+
+                    System.out.println("Executed transaction: " + scheduled.getTransaction());
+                } catch (Exception e) {
+                    System.err.println("Error executing transaction: " + scheduled.getTransaction() + " - " + e.getMessage());
+                }
             } else {
                 System.out.println("Transaction not yet scheduled: " + scheduled.getTransaction());
                 break;
             }
         }
     }
+
+
 
     public void printScheduledTransactions() {
         for (ScheduledTransaction st : scheduledTransactions) {
