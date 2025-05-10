@@ -1,5 +1,6 @@
 package proyecto.nexpay.web.service;
 
+import proyecto.nexpay.web.datastructures.SimpleList;
 import proyecto.nexpay.web.datastructures.Stack;
 import proyecto.nexpay.web.model.*;
 
@@ -11,6 +12,7 @@ public class TransactionManager {
     private final Stack<Transaction> transactionStack;
     private final NotificationManager notificationManager;
     private boolean undoTransaction;
+    private final Stack<Transaction> revertedTransactions;
 
     public TransactionManager(Nexpay nexpay) {
         this.nexpay = nexpay;
@@ -19,6 +21,7 @@ public class TransactionManager {
         this.transactionStack = new Stack<>();
         this.notificationManager = new NotificationManager(nexpay);
         this.undoTransaction = false;
+        this.revertedTransactions = new Stack<>();
     }
 
     public boolean isUndoTransaction() {
@@ -30,6 +33,10 @@ public class TransactionManager {
             return null;
         }
         return transactionStack.peek();
+    }
+
+    public Stack<Transaction> getRevertedTransactions() {
+        return revertedTransactions;
     }
 
     public void executeTransaction(Transaction transaction) {
@@ -117,13 +124,6 @@ public class TransactionManager {
         sendAutomaticNotifications(user);
     }
 
-    private void sendAutomaticNotifications(User user) {
-        notificationManager.checkLowBalance();
-        notificationManager.checkScheduledTransactions();
-        notificationManager.checkUndoTransaction();
-        notificationManager.processNotifications();
-    }
-
     public boolean undoLastTransaction() {
         if (transactionStack.isEmpty()) {
             System.out.println("No transactions to undo.");
@@ -183,11 +183,19 @@ public class TransactionManager {
             }
         }
         transactionCRUD.delete(transaction.getId());
+        revertedTransactions.push(transaction);
         System.out.println("Transaction reverted successfully.");
-        sendAutomaticNotifications(sourceUser);
         undoTransaction=true;
+        sendAutomaticNotifications(sourceUser);
         System.out.println(undoTransaction);
         return true;
+    }
+
+    private void sendAutomaticNotifications(User user) {
+        notificationManager.checkLowBalance();
+        notificationManager.checkScheduledTransactions();
+        notificationManager.checkUndoTransaction();
+        notificationManager.processNotifications();
     }
 
     private Account findAccount(String accountNumber) {

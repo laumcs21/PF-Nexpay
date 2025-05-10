@@ -78,7 +78,7 @@ public class NotificationManager {
 
     public void checkUndoTransaction() {
         if (nexpay.getTManager().isUndoTransaction()) {
-            Transaction lastTransaction = nexpay.getTManager().getLastRevertedTransaction();
+            Transaction lastTransaction = nexpay.getTManager().getRevertedTransactions().peek();
             if (lastTransaction != null) {
                 System.out.println("Transacción revertida: " + lastTransaction.getId());
 
@@ -99,8 +99,6 @@ public class NotificationManager {
             }
         }
     }
-
-
 
     public void processNotifications() {
         while (!notifications.isEmpty()) {
