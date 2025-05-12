@@ -40,8 +40,6 @@ public class Nexpay implements Serializable {
         this.userCRUD = new UserCRUD(this);
         this.accountCRUD = new AccountCRUD(this);
         this.transactionCRUD = new TransactionCRUD(this);
-
-        // Inyectar NotificationManager en TransactionManager
         this.TManager = new TransactionManager(this);
 
         this.SManager = new ScheduledTransactionManager(TManager);

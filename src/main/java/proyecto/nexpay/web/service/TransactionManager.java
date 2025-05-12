@@ -28,18 +28,14 @@ public class TransactionManager {
         return undoTransaction;
     }
 
-    public Transaction getLastRevertedTransaction() {
-        if (transactionStack.isEmpty()) {
-            return null;
-        }
-        return transactionStack.peek();
-    }
-
     public Stack<Transaction> getRevertedTransactions() {
         return revertedTransactions;
     }
 
     public void executeTransaction(Transaction transaction) {
+        // Verificar la integridad de la transacción antes de proceder
+        verifyTransactionIntegrity(transaction);
+
         Account source = findAccount(transaction.getSourceAccountNumber());
         if (source == null) {
             throw new IllegalArgumentException("La cuenta de origen no fue encontrada.");
@@ -191,6 +187,10 @@ public class TransactionManager {
         return true;
     }
 
+    private void verifyTransactionIntegrity(Transaction transaction) {
+        TransactionValidator.verifyTransaction(transaction, nexpay.getAccounts());
+    }
+
     private void sendAutomaticNotifications(User user) {
         notificationManager.checkLowBalance();
         notificationManager.checkScheduledTransactions();
@@ -207,6 +207,7 @@ public class TransactionManager {
         return null;
     }
 }
+
 
 
 
