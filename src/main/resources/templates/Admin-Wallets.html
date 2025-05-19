@@ -70,9 +70,11 @@
             <button type="submit">Actualizar Monedero</button>
         </form>
     </div>
-
-    <a th:href="@{/admin-dashboard}" class="boton">Volver</a>
 </div>
+
+<form th:action="@{/admin-dashboard}" method="get">
+    <button type="submit" class="boton-secundario">Volver al Panel</button>
+</form>
 </body>
 </html>
 

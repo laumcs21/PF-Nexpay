@@ -117,12 +117,6 @@ public class TransactionManager {
             WalletNode node = owner.getWalletGraph().findWalletNode(transaction.getWalletId());
             if (node != null) {
                 node.getWallet().addTransaction(transaction);
-            }
-        }
-        if (owner != null) {
-            WalletNode node = owner.getWalletGraph().findWalletNode(transaction.getWalletId());
-            if (node != null) {
-                node.getWallet().addTransaction(transaction);
                 node.getWallet().updateBalance(); // ← actualiza balance del wallet
             }
 

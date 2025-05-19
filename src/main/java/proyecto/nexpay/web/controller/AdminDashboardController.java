@@ -230,7 +230,9 @@ public class AdminDashboardController {
     }
 
     @GetMapping("/admin/transactions")
-    public String manageTransactions(@RequestParam(required = false) String search, String error, Model model) {
+    public String manageTransactions(@RequestParam(required = false) String search,
+                                     @RequestParam(required = false) String error,
+                                     Model model) {
         if (!Session.isAdmin()) return "redirect:/login";
 
         var all = nexpay.getTransactions();
@@ -238,7 +240,10 @@ public class AdminDashboardController {
 
         for (int i = 0; i < all.getSize(); i++) {
             Transaction t = all.get(i);
-            if (search == null || t.getId().toLowerCase().contains(search.toLowerCase())) {
+            if (search == null
+                    || t.getId().toLowerCase().contains(search.toLowerCase())
+                    || t.getUserId().toLowerCase().contains(search.toLowerCase())
+                    || t.getWalletId().toLowerCase().contains(search.toLowerCase())) {
                 filtered.addLast(t);
             }
         }
@@ -248,6 +253,7 @@ public class AdminDashboardController {
         model.addAttribute("errorMessage", error);
         return "admin-transactions";
     }
+
 
     @PostMapping("/admin/transactions")
     public String createTransaction(@RequestParam String userId,

@@ -23,6 +23,8 @@ public class UserWalletController {
         User user = nexpay.getUserCRUD().safeRead(userId);
         if (user == null) return "redirect:/login";
 
+        model.addAttribute("name", user.getName());
+        model.addAttribute("totalBalance", user.getTotalBalance());
         model.addAttribute("wallets", user.getWalletGraph().getWalletNodes());
         return "user-wallets";
     }

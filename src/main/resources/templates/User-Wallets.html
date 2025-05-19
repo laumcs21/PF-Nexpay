@@ -7,6 +7,8 @@
 </head>
 <body>
 <div class="contenedor">
+    <h2 class="titulo">¡Bienvenido, <span th:text="${name}">Usuario</span>!</h2>
+    <p>Saldo total: <strong>$<span th:text="${totalBalance}">0.0</span></strong></p>
     <h2>Mis Monederos</h2>
 
     <form th:action="@{/user/wallets}" method="post">

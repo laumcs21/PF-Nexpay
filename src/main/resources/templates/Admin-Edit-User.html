@@ -26,7 +26,8 @@
 </form>
 
 <br>
-<a th:href="@{/admin/users}">Volver</a>
-
+<form th:action="@{/admin/users}" method="get">
+    <button type="submit" class="boton-secundario">Volver</button>
+</form>
 </body>
 </html>
