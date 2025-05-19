@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Monederos</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="contenedor">
+    <h2>Mis Monederos</h2>
+
+    <form th:action="@{/user/wallets}" method="post">
+        <h3>Crear nuevo monedero</h3>
+        <label>Nombre del Monedero:</label>
+        <input type="text" name="name" required>
+        <button type="submit">Crear</button>
+    </form>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Saldo</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="wallet : ${wallets}">
+            <td th:text="${wallet.wallet.walletId}">ID</td>
+            <td th:text="${wallet.wallet.name}">Nombre</td>
+            <td th:text="${wallet.wallet.balance}">Saldo</td>
+            <td>
+                <form th:action="@{/user/wallet/access}" method="get" style="display:inline">
+                    <input type="hidden" name="walletId" th:value="${wallet.wallet.walletId}" />
+                    <button type="submit">Ingresar</button>
+                </form>
+                <form th:action="@{/user/wallet/delete}" method="post" style="display:inline">
+                    <input type="hidden" name="walletId" th:value="${wallet.wallet.walletId}" />
+                    <button type="submit" class="boton-secundario">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

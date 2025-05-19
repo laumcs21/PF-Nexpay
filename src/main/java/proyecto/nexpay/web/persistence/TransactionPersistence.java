@@ -35,6 +35,7 @@ public class TransactionPersistence {
         StringBuilder transactionText = new StringBuilder();
         for (Transaction transaction : transactions) {
             transactionText.append(transaction.getUserId()).append("@@")
+                    .append(transaction.getWalletId()).append("@@")
                     .append(transaction.getId()).append("@@")
                     .append(transaction.getDate()).append("@@")
                     .append(transaction.getType()).append("@@")
@@ -79,19 +80,18 @@ public class TransactionPersistence {
 
             try {
                 String userId = split[0];
-                String dateText = split[2];
+                String dateText = split[3];
                 String[] dateParts = dateText.split("-");
                 int year = Integer.parseInt(dateParts[0]);
                 int month = Integer.parseInt(dateParts[1]);
                 int day = Integer.parseInt(dateParts[2]);
                 LocalDate date = LocalDate.of(year, month, day);
 
-                TransactionType type = TransactionType.valueOf(split[3]);
+                TransactionType type = TransactionType.valueOf(split[4]);
 
                 Transaction.Builder builder = new Transaction.Builder(
-                        userId, split[1], date, type, Double.parseDouble(split[4]), split[5]);
-
-                for (int i = 6; i < split.length; i++) {
+                        userId, split [1], split[2], date, type, Double.parseDouble(split[5]), split[6]);
+                for (int i = 7; i < split.length; i++) {
                     if (split[i].startsWith("destination=")) {
                         builder.withDestinationAccountNumber(split[i].substring("destination=".length()));
                     } else if (split[i].startsWith("description=")) {
@@ -190,23 +190,23 @@ public class TransactionPersistence {
 
             String[] split = scheduledTransactionText.split("@@");
 
-            if (split.length < 6) {
+            if (split.length < 7) {
                 System.err.println("Invalid or incomplete line: " + scheduledTransactionText);
                 continue;
             }
 
             try {
                 String userId = split[0];
-                String scheduledDateText = split[2] + "T10:00:00";
+                String scheduledDateText = split[3] + "T10:00:00";
                 LocalDateTime scheduledDate = LocalDateTime.parse(scheduledDateText);
 
-                TransactionType type = TransactionType.valueOf(split[3]);
+                TransactionType type = TransactionType.valueOf(split[4]);
 
                 Transaction.Builder builder = new Transaction.Builder(
-                        userId, split[1], scheduledDate.toLocalDate(), type, Double.parseDouble(split[4]), split[5]);
+                        userId, split[1],split[2], scheduledDate.toLocalDate(), type, Double.parseDouble(split[5]), split[6]);
 
-                if (split.length > 6) {
-                    for (int i = 6; i < split.length; i++) {
+                if (split.length > 7) {
+                    for (int i = 7; i < split.length; i++) {
                         if (split[i].startsWith("destination=")) {
                             builder.withDestinationAccountNumber(split[i].substring("destination=".length()));
                         } else if (split[i].startsWith("description=")) {

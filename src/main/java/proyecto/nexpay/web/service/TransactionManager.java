@@ -1,6 +1,5 @@
 package proyecto.nexpay.web.service;
 
-import proyecto.nexpay.web.datastructures.SimpleList;
 import proyecto.nexpay.web.datastructures.Stack;
 import proyecto.nexpay.web.model.*;
 
@@ -113,6 +112,30 @@ public class TransactionManager {
 
         transactionCRUD.create(transaction);
         transactionStack.push(transaction);
+        User owner = nexpay.getUserCRUD().safeRead(transaction.getUserId());
+        if (owner != null) {
+            WalletNode node = owner.getWalletGraph().findWalletNode(transaction.getWalletId());
+            if (node != null) {
+                node.getWallet().addTransaction(transaction);
+            }
+        }
+        if (owner != null) {
+            WalletNode node = owner.getWalletGraph().findWalletNode(transaction.getWalletId());
+            if (node != null) {
+                node.getWallet().addTransaction(transaction);
+                node.getWallet().updateBalance(); // ← actualiza balance del wallet
+            }
+
+            // Recalcular totalBalance sumando los balances de todos los monederos del usuario
+            double userTotal = 0.0;
+            for (WalletNode wn : owner.getWalletGraph().getWalletNodes()) {
+                userTotal += wn.getWallet().getBalance();
+            }
+            owner.setTotalBalance(userTotal);
+            nexpay.getUserCRUD().update(owner);
+        }
+
+
 
         System.out.println("Transaction executed successfully.");
         System.out.println("Total balance for user " + user.getId() + ": " + totalBalanceSource);
@@ -180,6 +203,28 @@ public class TransactionManager {
         }
         transactionCRUD.delete(transaction.getId());
         revertedTransactions.push(transaction);
+        User owner = nexpay.getUserCRUD().safeRead(transaction.getUserId());
+        if (owner != null) {
+            WalletNode node = owner.getWalletGraph().findWalletNode(transaction.getWalletId());
+            if (node != null) {
+                node.getWallet().getTransactions().remove(transaction);
+            }
+        }
+        if (owner != null) {
+            WalletNode node = owner.getWalletGraph().findWalletNode(transaction.getWalletId());
+            if (node != null) {
+                node.getWallet().getTransactions().remove(transaction);
+                node.getWallet().updateBalance(); // ← actualiza balance del wallet
+            }
+
+            double userTotal = 0.0;
+            for (WalletNode wn : owner.getWalletGraph().getWalletNodes()) {
+                userTotal += wn.getWallet().getBalance();
+            }
+            owner.setTotalBalance(userTotal);
+            nexpay.getUserCRUD().update(owner);
+        }
+
         System.out.println("Transaction reverted successfully.");
         undoTransaction=true;
         sendAutomaticNotifications(sourceUser);

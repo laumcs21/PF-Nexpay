@@ -178,6 +178,7 @@ public class AdminDashboardController {
 
     @PostMapping("/admin/accounts")
     public String createAccount(@RequestParam String userId,
+                                @RequestParam String walletId,
                                 @RequestParam String bankName,
                                 @RequestParam AccountType accountType) {
         if (!Session.isAdmin()) return "redirect:/login";
@@ -188,16 +189,31 @@ public class AdminDashboardController {
         }
 
         String generatedId = AccountCodeGenerator.generateUniqueCode(5, nexpay.getAccounts());
-        String generatedAccountNumber = AccountNumberGenerator.generateUniqueNumber(5, nexpay.getAccounts());
+        String generatedAccountNumber = AccountNumberGenerator.generateUniqueNumber(10, nexpay.getAccounts());
         double balance = 0.0;
 
-        Account newAccount = new Account(userId, generatedId, bankName, generatedAccountNumber, accountType, balance);
-        nexpay.getAccountCRUD().create(newAccount);
+        // Crear cuenta
+        Account newAccount = new Account(userId, walletId, generatedId, bankName, generatedAccountNumber, accountType, balance);
+        Account createdAccount;
+        try {
+            createdAccount = nexpay.getAccountCRUD().create(newAccount);
+        } catch (IllegalArgumentException e) {
+            return "redirect:/admin/accounts?error=accountExists";
+        }
+
+        // Solo si se creó exitosamente, se asocia al wallet del grafo
+        if (createdAccount != null) {
+            WalletNode node = user.getWalletGraph().findWalletNode(walletId);
+            if (node != null) {
+                node.getWallet().addAccount(createdAccount);
+                node.getWallet().updateBalance();
+            }
+        }
 
         updateUserTotalBalance(user);
-
         return "redirect:/admin/accounts";
     }
+
 
     private void updateUserTotalBalance(User user) {
         double total = 0.0;
@@ -244,9 +260,27 @@ public class AdminDashboardController {
 
         if (!Session.isAdmin()) return "redirect:/login";
 
+        // Buscar la cuenta de origen
+        Account sourceAccount = null;
+        for (int i = 0; i < nexpay.getAccounts().getSize(); i++) {
+            Account acc = nexpay.getAccounts().get(i);
+            if (acc.getAccountNumber().equals(sourceAccountNumber)) {
+                sourceAccount = acc;
+                break;
+            }
+        }
+
+        if (sourceAccount == null) {
+            redirectAttributes.addAttribute("error", "Cuenta de origen no encontrada.");
+            return "redirect:/admin/transactions";
+        }
+
+        String walletId = sourceAccount.getWalletId();
+
         try {
             var transaction = new Transaction.Builder(
                     userId,
+                    walletId,  // Incluir walletId en la transacción
                     TransactionCodeGenerator.generateUniqueCode(5, nexpay.getTransactions()),
                     LocalDate.now(),
                     type,
@@ -265,6 +299,7 @@ public class AdminDashboardController {
         }
     }
 
+
     @PostMapping("/admin/transactions/undo")
     public String undoTransaction() {
         if (!Session.isAdmin()) return "redirect:/login";
@@ -272,6 +307,120 @@ public class AdminDashboardController {
         nexpay.getTManager().undoLastTransaction();
         return "redirect:/admin/transactions";
     }
+
+    @GetMapping("/admin/wallets")
+    public String manageWallets(@RequestParam(required = false) String userId, Model model) {
+        if (!Session.isAdmin()) return "redirect:/login";
+
+        SimpleList<Wallet> filteredWallets = new SimpleList<>();
+
+        if (userId != null && !userId.isEmpty()) {
+            User user = nexpay.getUserCRUD().safeRead(userId);
+            if (user != null) {
+                for (WalletNode node : user.getWalletGraph().getWalletNodes()) {
+                    filteredWallets.addLast(node.getWallet());
+                }
+            }
+        } else {
+            // Mostrar todos los monederos de todos los usuarios
+            for (int i = 0; i < nexpay.getUsers().getSize(); i++) {
+                User user = nexpay.getUsers().get(i);
+                for (WalletNode node : user.getWalletGraph().getWalletNodes()) {
+                    filteredWallets.addLast(node.getWallet());
+                }
+            }
+        }
+
+        model.addAttribute("wallets", filteredWallets);
+        model.addAttribute("users", nexpay.getUsers());
+        model.addAttribute("selectedUserId", userId);
+
+        return "admin-wallets";
+    }
+
+
+    @PostMapping("/admin/wallets")
+    public String createWallet(@RequestParam String userId,
+                               @RequestParam String walletName,
+                               RedirectAttributes redirectAttributes) {
+        if (!Session.isAdmin()) return "redirect:/login";
+
+        User user = nexpay.getUserCRUD().safeRead(userId);
+        if (user == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Usuario no encontrado.");
+            return "redirect:/admin/wallets";
+        }
+
+        String walletId = WalletCodeGenerator.generateUniqueCode(6, nexpay.getWallets());
+        Wallet newWallet = new Wallet(walletId, userId, walletName);
+
+        try {
+            nexpay.getWalletCRUD().create(newWallet);  // ← el create ya agrega al grafo
+            redirectAttributes.addFlashAttribute("successMessage", "Monedero creado exitosamente.");
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error al crear el monedero: " + e.getMessage());
+        }
+
+        return "redirect:/admin/wallets?userId=" + userId;
+    }
+
+
+    @PostMapping("/admin/wallet/delete")
+    public String deleteWallet(@RequestParam String userId,
+                               @RequestParam String walletId,
+                               RedirectAttributes redirectAttributes) {
+        if (!Session.isAdmin()) return "redirect:/login";
+
+        User user = nexpay.getUserCRUD().safeRead(userId);
+        if (user != null) {
+            WalletNode node = user.getWalletGraph().findWalletNode(walletId);
+            if (node != null) {
+                user.getWalletGraph().removeWallet(walletId);
+                nexpay.getWalletCRUD().delete(walletId);
+                redirectAttributes.addFlashAttribute("successMessage", "Monedero eliminado.");
+            }
+        }
+
+        return "redirect:/admin/wallets?userId=" + userId;
+    }
+
+    @GetMapping("/admin/wallet/edit")
+    public String showEditWalletForm(@RequestParam String userId,
+                                     @RequestParam String walletId,
+                                     Model model) {
+        if (!Session.isAdmin()) return "redirect:/login";
+
+        User user = nexpay.getUserCRUD().safeRead(userId);
+        if (user == null) return "redirect:/admin/wallets";
+
+        WalletNode node = user.getWalletGraph().findWalletNode(walletId);
+        if (node == null) return "redirect:/admin/wallets?userId=" + userId;
+
+        model.addAttribute("walletToEdit", node.getWallet());
+        model.addAttribute("userId", userId);
+        return "admin-wallets";
+    }
+
+    @PostMapping("/admin/wallet/update")
+    public String updateWallet(@RequestParam String userId,
+                               @RequestParam String walletId,
+                               @RequestParam String name) {
+        if (!Session.isAdmin()) return "redirect:/login";
+
+        User user = nexpay.getUserCRUD().safeRead(userId);
+        if (user != null) {
+            WalletNode node = user.getWalletGraph().findWalletNode(walletId);
+            if (node != null) {
+                node.getWallet().setName(name);
+                node.getWallet().updateBalance();
+                nexpay.getWalletCRUD().update(node.getWallet());
+            }
+        }
+
+        return "redirect:/admin/wallets?userId=" + userId;
+    }
+
+
 
 }
 

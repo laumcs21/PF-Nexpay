@@ -31,6 +31,7 @@ public class AccountPersistence {
 
         for (Account account : accounts) {
             accountText.append(account.getUserId()).append("@@");
+            accountText.append(account.getWalletId()).append("@@");
             accountText.append(account.getId()).append("@@");
             accountText.append(account.getBankName()).append("@@");
             accountText.append(account.getAccountNumber()).append("@@");
@@ -64,8 +65,8 @@ public class AccountPersistence {
                 String[] split = accountText.split("@@");
                 String userId = split[0];
                 AccountType accountType = AccountType.valueOf(split[split.length - 2]);
-                Account account = new Account(userId, split[1], split[2], split[3], accountType,
-                        Double.parseDouble(split[5]));
+                Account account = new Account(userId,split[1], split[2], split[3], split[4], accountType,
+                        Double.parseDouble(split[6]));
                 accounts.addLast(account);
             } catch (Exception e) {
                 System.err.println("Error loading accounts from file: " + e.getMessage());

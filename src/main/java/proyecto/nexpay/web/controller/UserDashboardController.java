@@ -2,17 +2,14 @@ package proyecto.nexpay.web.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.*;
 import proyecto.nexpay.web.model.*;
 import proyecto.nexpay.web.service.Session;
 import proyecto.nexpay.web.datastructures.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 
 @Controller
 public class UserDashboardController {
@@ -22,14 +19,16 @@ public class UserDashboardController {
     @GetMapping("/dashboard")
     public String showUserDashboard(Model model) {
         String userId = Session.getUserId();
+        String walletId = Session.getSelectedWalletId();
 
         User user = nexpay.getUserCRUD().safeRead(userId);
-        if (user == null) {
-            return "redirect:/login";
-        }
+        WalletNode walletNode = user.getWalletGraph().findWalletNode(walletId);
+
+        if (user == null || walletNode == null) return "redirect:/login";
 
         model.addAttribute("name", user.getName());
-        model.addAttribute("totalBalance", user.getTotalBalance());
+        model.addAttribute("walletName", walletNode.getWallet().getName());
+        model.addAttribute("walletBalance", walletNode.getWallet().getBalance());
 
         return "user-dashboard";
     }
@@ -37,27 +36,22 @@ public class UserDashboardController {
     @GetMapping("/user/accounts")
     public String viewMyAccounts(@RequestParam(required = false) String editId, Model model) {
         String userId = Session.getUserId();
-        if (userId == null) return "redirect:/login";
+        String walletId = Session.getSelectedWalletId();
+        if (userId == null || walletId == null) return "redirect:/login";
 
-        SimpleList<Account> userAccounts = new SimpleList<>();
+        WalletNode node = nexpay.getUserCRUD().safeRead(userId).getWalletGraph().findWalletNode(walletId);
+        if (node == null) return "redirect:/dashboard";
 
-        for (int i = 0; i < nexpay.getAccounts().getSize(); i++) {
-            Account acc = nexpay.getAccounts().get(i);
-            if (acc.getUserId().equals(userId)) {
-                userAccounts.addLast(acc);
-            }
-        }
+        SimpleList<Account> accounts = node.getWallet().getAccounts();
+        model.addAttribute("accounts", accounts);
 
         if (editId != null) {
             Account accountToEdit = nexpay.getAccountCRUD().safeRead(editId);
             model.addAttribute("accountToEdit", accountToEdit);
         }
 
-        model.addAttribute("accounts", userAccounts);
         return "user-accounts";
     }
-
-
 
     @PostMapping("/user/accounts")
     public String createAccount(@RequestParam String bankName,
@@ -65,18 +59,26 @@ public class UserDashboardController {
                                 RedirectAttributes redirectAttributes) {
 
         String userId = Session.getUserId();
-        if (userId == null) return "redirect:/login";
+        String walletId = Session.getSelectedWalletId();
+        if (userId == null || walletId == null) return "redirect:/login";
 
         String accountId = AccountCodeGenerator.generateUniqueCode(5, nexpay.getAccounts());
         String accountNumber = AccountNumberGenerator.generateUniqueNumber(10, nexpay.getAccounts());
         double balance = 0.0;
 
-        Account newAccount = new Account(userId, accountId, bankName, accountNumber, accountType, balance);
-        nexpay.getAccountCRUD().create(newAccount);
+        Account newAccount = new Account(userId, walletId, accountId, bankName, accountNumber, accountType, balance);
+        Account created = nexpay.getAccountCRUD().create(newAccount);
+
+        if (created != null) {
+            WalletNode node = nexpay.getUserCRUD().safeRead(userId).getWalletGraph().findWalletNode(walletId);
+            if (node != null) {
+                node.getWallet().addAccount(created);
+                node.getWallet().updateBalance();
+            }
+        }
 
         updateUserTotalBalance(userId);
         redirectAttributes.addFlashAttribute("successMessage", "Cuenta creada exitosamente.");
-
         return "redirect:/user/accounts";
     }
 
@@ -117,12 +119,10 @@ public class UserDashboardController {
     @PostMapping("/user/account/update")
     public String updateAccount(@ModelAttribute("accountToEdit") Account updatedAccount,
                                 RedirectAttributes redirectAttributes) {
-
         String userId = Session.getUserId();
         if (userId == null) return "redirect:/login";
 
         Account account = nexpay.getAccountCRUD().safeRead(updatedAccount.getId());
-
         if (account != null && account.getUserId().equals(userId)) {
             account.setBankName(updatedAccount.getBankName());
             account.setAccountType(updatedAccount.getAccountType());
@@ -136,19 +136,13 @@ public class UserDashboardController {
     @GetMapping("/user/transactions")
     public String viewUserTransactions(Model model) {
         String userId = Session.getUserId();
-        if (userId == null) return "redirect:/login";
+        String walletId = Session.getSelectedWalletId();
+        if (userId == null || walletId == null) return "redirect:/login";
 
-        DoubleLinkedList<Transaction> all = nexpay.getTransactions();
-        DoubleLinkedList<Transaction> userTx = new DoubleLinkedList<>();
+        WalletNode node = nexpay.getUserCRUD().safeRead(userId).getWalletGraph().findWalletNode(walletId);
+        if (node == null) return "redirect:/dashboard";
 
-        for (int i = 0; i < all.getSize(); i++) {
-            Transaction tx = all.get(i);
-            if (tx.getUserId().equals(userId)) {
-                userTx.addLast(tx);
-            }
-        }
-
-        model.addAttribute("transactions", userTx);
+        model.addAttribute("transactions", node.getWallet().getTransactions());
         return "user-transactions";
     }
 
@@ -171,18 +165,13 @@ public class UserDashboardController {
     @GetMapping("/user/transactions/new")
     public String showTransactionForm(Model model) {
         String userId = Session.getUserId();
-        if (userId == null) return "redirect:/login";
+        String walletId = Session.getSelectedWalletId();
+        if (userId == null || walletId == null) return "redirect:/login";
 
-        SimpleList<Account> userAccounts = new SimpleList<>();
+        WalletNode node = nexpay.getUserCRUD().safeRead(userId).getWalletGraph().findWalletNode(walletId);
+        if (node == null) return "redirect:/dashboard";
 
-        for (int i = 0; i < nexpay.getAccounts().getSize(); i++) {
-            Account acc = nexpay.getAccounts().get(i);
-            if (acc.getUserId().equals(userId)) {
-                userAccounts.addLast(acc);
-            }
-        }
-
-        model.addAttribute("accounts", userAccounts);
+        model.addAttribute("accounts", node.getWallet().getAccounts());
         return "User-Make-Transaction";
     }
 
@@ -196,11 +185,13 @@ public class UserDashboardController {
                                     RedirectAttributes redirectAttributes) {
 
         String userId = Session.getUserId();
-        if (userId == null) return "redirect:/login";
+        String walletId = Session.getSelectedWalletId();
+        if (userId == null || walletId == null) return "redirect:/login";
 
         try {
             Transaction.Builder builder = new Transaction.Builder(
                     userId,
+                    walletId,
                     TransactionCodeGenerator.generateUniqueCode(5, nexpay.getTransactions()),
                     LocalDate.now(),
                     type,
@@ -237,8 +228,7 @@ public class UserDashboardController {
 
         return "redirect:/user/transactions";
     }
-
-
 }
+
 
 

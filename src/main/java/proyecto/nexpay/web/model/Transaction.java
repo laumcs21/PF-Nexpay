@@ -16,6 +16,7 @@ public class Transaction implements Serializable {
     private String sourceAccountNumber;
     private String destinationAccountNumber;
     private LocalDateTime scheduledDate;
+    private String walletId;
 
     public Transaction(Builder builder) {
         this.userId = builder.userId;
@@ -27,6 +28,7 @@ public class Transaction implements Serializable {
         this.sourceAccountNumber = builder.sourceAccountNumber;
         this.destinationAccountNumber = builder.destinationAccountNumber;
         this.scheduledDate = builder.scheduledDate;
+        this.walletId = builder.walletId;
     }
 
     public String getUserId() {
@@ -101,6 +103,10 @@ public class Transaction implements Serializable {
         this.destinationAccountNumber = destinationAccountNumber;
     }
 
+    public String getWalletId() {
+        return walletId;
+    }
+
     public static class Builder {
 
         private String userId;
@@ -112,12 +118,14 @@ public class Transaction implements Serializable {
         private String sourceAccountNumber;
         private String destinationAccountNumber;
         private LocalDateTime scheduledDate;
+        private String walletId;
 
-        public Builder(String userId, String id, LocalDate date, TransactionType type, double amount,
+        public Builder(String userId, String walletId, String id, LocalDate date, TransactionType type, double amount,
                        String sourceAccountNumber) {
             this.type = type;
             this.userId = userId;
             this.id = id;
+            this.walletId = walletId;
             this.date = date;
             this.amount = amount;
             this.sourceAccountNumber = sourceAccountNumber;

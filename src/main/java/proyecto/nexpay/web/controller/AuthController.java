@@ -40,7 +40,7 @@ public class AuthController {
         Session.setIsAdmin(false);
         Session.setUserId(user.getId());
 
-        return "redirect:/dashboard";
+        return "redirect:/user/wallets";
     }
 
     @GetMapping("/register")
@@ -83,6 +83,7 @@ public class AuthController {
     public String logout() {
         Session.setUserId(null);
         Session.setIsAdmin(false);
+        Session.setSelectedWalletId(null);
         return "redirect:/login";
     }
 }

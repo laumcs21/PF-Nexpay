@@ -10,12 +10,14 @@ public class Account implements Serializable {
     private String accountNumber;
     private AccountType accountType;
     private Double balance;
+    private String walletId;
+
 
     public static long getSerialversionuid() {
         return serialVersionUID;
     }
 
-    public Account(String userId, String id, String bankName, String accountNumber, AccountType accountType,
+    public Account(String userId, String walletId, String id, String bankName, String accountNumber, AccountType accountType,
                    Double balance) {
         this.userId = userId;
         this.id = id;
@@ -23,6 +25,7 @@ public class Account implements Serializable {
         this.accountNumber = accountNumber;
         this.accountType = accountType;
         this.balance = balance;
+        this.walletId = walletId;
     }
 
     public String getUserId() {
@@ -71,6 +74,10 @@ public class Account implements Serializable {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public String getWalletId() {
+        return walletId;
     }
 
     @Override

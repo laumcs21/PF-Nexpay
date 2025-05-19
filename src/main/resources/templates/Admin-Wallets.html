@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Monederos - Nexpay</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="contenedor">
+    <h2>Monederos Registrados</h2>
+
+    <form th:action="@{/admin/wallets}" method="post">
+        <h3>Crear nuevo monedero</h3>
+        <label>Cédula del Usuario:</label>
+        <input type="text" name="userId" required>
+
+        <label>Nombre del Monedero:</label>
+        <input type="text" name="walletName" required>
+
+        <button type="submit" class="boton">Crear Monedero</button>
+    </form>
+
+    <hr>
+
+    <form th:action="@{/admin/wallets}" method="get">
+        <input type="text" name="search" th:value="${search}" placeholder="Buscar por ID o Usuario">
+        <button type="submit">Buscar</button>
+    </form>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Nombre</th>
+            <th>Saldo</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="wallet : ${wallets}">
+            <td th:text="${wallet.walletId}">ID</td>
+            <td th:text="${wallet.userId}">Usuario</td>
+            <td th:text="${wallet.name}">Nombre</td>
+            <td th:text="${wallet.balance}">Saldo</td>
+            <td>
+                <form th:action="@{/admin/wallet/delete}" method="post" style="display:inline;">
+                    <input type="hidden" name="walletId" th:value="${wallet.walletId}">
+                    <input type="hidden" name="userId" th:value="${wallet.userId}">
+                    <button type="submit" class="boton-secundario">Eliminar</button>
+                </form>
+                <a th:href="@{/admin/wallet/edit(userId=${wallet.userId}, walletId=${wallet.walletId})}" class="boton-secundario">Editar</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div th:if="${walletToEdit != null}" style="margin-top: 30px;">
+        <h3>Editar Monedero</h3>
+        <form th:action="@{/admin/wallet/update}" method="post" th:object="${walletToEdit}">
+            <input type="hidden" name="userId" th:value="${userId}" />
+            <input type="hidden" th:field="*{walletId}" />
+
+            <label for="editWalletName">Nombre:</label>
+            <input type="text" id="editWalletName" th:field="*{name}" required /><br>
+
+            <label for="editBalance">Balance:</label>
+            <input type="number" id="editBalance" th:field="*{balance}" readonly /><br>
+
+            <button type="submit">Actualizar Monedero</button>
+        </form>
+    </div>
+
+    <a th:href="@{/admin-dashboard}" class="boton">Volver</a>
+</div>
+</body>
+</html>
+

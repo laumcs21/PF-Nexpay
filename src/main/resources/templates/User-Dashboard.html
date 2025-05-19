@@ -2,13 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Usuario - Nexpay</title>
+    <title>Panel del Usuario - Nexpay</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="pagina-usuario">
 <div class="contenedor-dashboard">
-    <h2 class="titulo">Bienvenido, <span th:text="${name}">Usuario</span>!</h2>
-    <p>Tu saldo total es: <strong>$<span th:text="${totalBalance}">0.0</span></strong></p>
+    <h2 class="titulo">¡Bienvenido, <span th:text="${name}">Usuario</span>!</h2>
+
+    <h3>Monedero actual: <span th:text="${walletName}">Monedero</span></h3>
+    <p>Saldo del monedero: <strong>$<span th:text="${walletBalance}">0.0</span></strong></p>
 
     <form th:action="@{/user/accounts}" method="get">
         <button type="submit" class="boton">Ver Cuentas</button>
@@ -22,9 +24,14 @@
         <button type="submit" class="boton">Realizar Transacción</button>
     </form>
 
+    <form th:action="@{/user/wallets}" method="get">
+        <button type="submit" class="boton-secundario">Cambiar de Monedero</button>
+    </form>
+
     <form th:action="@{/logout}" method="get">
         <button type="submit" class="boton-secundario">Cerrar Sesión</button>
     </form>
 </div>
 </body>
 </html>
+

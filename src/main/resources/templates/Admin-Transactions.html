@@ -50,6 +50,7 @@
         <th>Cuenta Origen</th>
         <th>Cuenta Destino</th>
         <th>ID Usuario</th>
+        <th>ID Monedero</th> <!-- Nueva columna -->
     </tr>
     </thead>
     <tbody>
@@ -61,9 +62,11 @@
         <td th:text="${transaction.sourceAccountNumber}">Origen</td>
         <td th:text="${transaction.destinationAccountNumber}">Destino</td>
         <td th:text="${transaction.userId}">Usuario</td>
+        <td th:text="${transaction.walletId}">Monedero</td> <!-- Mostrar walletId -->
     </tr>
     </tbody>
 </table>
+
 
 <form th:action="@{/admin/transactions/undo}" method="post">
     <button type="submit">Revertir Última Transacción</button>
