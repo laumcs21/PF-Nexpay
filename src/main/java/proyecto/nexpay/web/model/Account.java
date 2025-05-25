@@ -11,6 +11,7 @@ public class Account implements Serializable {
     private AccountType accountType;
     private Double balance;
     private String walletId;
+    private String category;
 
 
     public static long getSerialversionuid() {
@@ -18,7 +19,7 @@ public class Account implements Serializable {
     }
 
     public Account(String userId, String walletId, String id, String bankName, String accountNumber, AccountType accountType,
-                   Double balance) {
+                   Double balance, String category) {
         this.userId = userId;
         this.id = id;
         this.bankName = bankName;
@@ -26,6 +27,7 @@ public class Account implements Serializable {
         this.accountType = accountType;
         this.balance = balance;
         this.walletId = walletId;
+        this.category = category;
     }
 
     public String getUserId() {
@@ -78,6 +80,14 @@ public class Account implements Serializable {
 
     public String getWalletId() {
         return walletId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override

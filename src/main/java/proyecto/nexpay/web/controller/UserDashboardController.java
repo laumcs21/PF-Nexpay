@@ -7,6 +7,7 @@ import proyecto.nexpay.web.model.*;
 import proyecto.nexpay.web.service.Session;
 import proyecto.nexpay.web.datastructures.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import proyecto.nexpay.web.util.GraphStats;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,19 +20,36 @@ public class UserDashboardController {
     @GetMapping("/dashboard")
     public String showUserDashboard(Model model) {
         String userId = Session.getUserId();
-        String walletId = Session.getSelectedWalletId();
+
+        if (userId == null) {
+            return "redirect:/login";
+        }
 
         User user = nexpay.getUserCRUD().safeRead(userId);
-        WalletNode walletNode = user.getWalletGraph().findWalletNode(walletId);
+        if (user == null) {
+            model.addAttribute("errorMessage", "Your session is invalid or user does not exist.");
+            return "error-page"; // o redirige a login
+        }
 
-        if (user == null || walletNode == null) return "redirect:/login";
+        String walletId = Session.getSelectedWalletId();
+        WalletNode node = user.getWalletGraph().findWalletNode(walletId);
+
+        if (node == null) {
+            model.addAttribute("errorMessage", "No wallet selected or wallet does not exist.");
+            return "error-page";
+        }
 
         model.addAttribute("name", user.getName());
-        model.addAttribute("walletName", walletNode.getWallet().getName());
-        model.addAttribute("walletBalance", walletNode.getWallet().getBalance());
+        model.addAttribute("walletName", node.getWallet().getName());
+        model.addAttribute("walletBalance", node.getWallet().getBalance());
+
+        model.addAttribute("points", user.getPoints());
+        model.addAttribute("rank", nexpay.getRankManager().getRank(user.getId(), user.getPoints()));
 
         return "user-dashboard";
     }
+
+
 
     @GetMapping("/user/accounts")
     public String viewMyAccounts(@RequestParam(required = false) String editId, Model model) {
@@ -56,7 +74,9 @@ public class UserDashboardController {
     @PostMapping("/user/accounts")
     public String createAccount(@RequestParam String bankName,
                                 @RequestParam AccountType accountType,
+                                @RequestParam String category,  // ⬅️ nuevo
                                 RedirectAttributes redirectAttributes) {
+
 
         String userId = Session.getUserId();
         String walletId = Session.getSelectedWalletId();
@@ -66,7 +86,7 @@ public class UserDashboardController {
         String accountNumber = AccountNumberGenerator.generateUniqueNumber(10, nexpay.getAccounts());
         double balance = 0.0;
 
-        Account newAccount = new Account(userId, walletId, accountId, bankName, accountNumber, accountType, balance);
+        Account newAccount = new Account(userId, walletId, accountId, bankName, accountNumber, accountType, balance, category);
         Account created = nexpay.getAccountCRUD().create(newAccount);
 
         if (created != null) {
@@ -228,6 +248,157 @@ public class UserDashboardController {
 
         return "redirect:/user/transactions";
     }
+
+    @GetMapping("/user/points")
+    @ResponseBody
+    public String showPoints() {
+        String userId = Session.getUserId();
+        if (userId == null) return "No estás logueado";
+
+        User user = nexpay.getUserCRUD().safeRead(userId);
+        int points = user.getPoints();
+        String rank = nexpay.getRankManager().getRank(user.getId(), points);
+
+        return "Puntos acumulados: " + points + "\nRango: " + rank;
+    }
+
+    @GetMapping("/user/benefits")
+    public String showBenefitsPage(Model model) {
+        String userId = Session.getUserId();
+        if (userId == null) return "redirect:/login";
+
+        User user = nexpay.getUserCRUD().safeRead(userId);
+        int points = user.getPoints();
+        String rank = nexpay.getRankManager().getRank(user.getId(), points);
+
+        model.addAttribute("points", points);
+        model.addAttribute("rank", rank);
+        return "user-benefits";
+    }
+
+    @PostMapping("/user/redeem")
+    public String redeemBenefit(@RequestParam String benefit, RedirectAttributes redirectAttributes) {
+        String userId = Session.getUserId();
+        if (userId == null) return "redirect:/login";
+
+        User user = nexpay.getUserCRUD().safeRead(userId);
+        int points = user.getPoints();
+        boolean benefitApplied = false;
+        String rank = nexpay.getRankManager().getRank(user.getId(), points);
+
+        switch (benefit) {
+            case "discount":
+                if (!rank.equals("Plata") && !rank.equals("Oro") && !rank.equals("Platino")) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "This benefit requires rank Plata or higher.");
+                    break;
+                }
+                if (points >= 100) {
+                    user.setPoints(points - 100);
+                    user.getBenefits().activateDiscount();
+                    System.out.println("Puntos actualizados: " + user.getPoints());
+                    redirectAttributes.addFlashAttribute("successMessage", "Descuento de comision del 10% activado correctamente.");
+                    benefitApplied = true;
+                } else {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Insufficient points.");
+                }
+                break;
+
+            case "free_withdrawals":
+                if (!rank.equals("Oro") && !rank.equals("Platino")) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "This benefit requires rank Oro or higher.");
+                    break;
+                }
+                if (points >= 500) {
+                    user.setPoints(points - 500);
+                    user.getBenefits().activateFreeWithdrawalsFor30Days();
+                    System.out.println("Puntos actualizados: " + user.getPoints());
+                    redirectAttributes.addFlashAttribute("successMessage", "Recargo Gratis por 30 dias.");
+                    benefitApplied = true;
+                } else {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Puntos Insuficientes.");
+                }
+                break;
+
+            case "bonus_50":
+                if (!rank.equals("Platino")) {
+                    redirectAttributes.addFlashAttribute("errorMessage", "This benefit requires rank Platino.");
+                    break;
+                }
+                if (points >= 1000) {
+                    user.setPoints(points - 1000);
+
+                    WalletNode node = user.getWalletGraph().findWalletNode(Session.getSelectedWalletId());
+                    if (node != null && !node.getWallet().getAccounts().isEmpty()) {
+                        Account account = node.getWallet().getAccounts().get(0);
+                        account.setBalance(account.getBalance() + 50);
+                        nexpay.getAccountCRUD().update(account);
+
+                        node.getWallet().updateBalance();
+
+                        // Recalcular y actualizar total balance del usuario
+                        double total = 0.0;
+                        for (WalletNode wn : user.getWalletGraph().getWalletNodes()) {
+                            total += wn.getWallet().getBalance();
+                        }
+                        user.setTotalBalance(total);
+
+                        redirectAttributes.addFlashAttribute("successMessage", "$Bono de 50$ aplicado exitosamente.");
+                        benefitApplied = true;
+                        System.out.println("Puntos actualizados: " + user.getPoints());
+                    } else {
+                        redirectAttributes.addFlashAttribute("errorMessage", "No se encontro cuenta para aplicar el bono.");
+                    }
+                } else {
+                    redirectAttributes.addFlashAttribute("errorMessage", "Puntos insuficientes.");
+                }
+                break;
+
+            default:
+                redirectAttributes.addFlashAttribute("errorMessage", "Beneficio no valido.");
+        }
+
+        // Solo si se aplicó correctamente el beneficio:
+        if (benefitApplied) {
+            nexpay.getUserCRUD().update(user); // persistir cambios del usuario
+            System.out.println("Puntos actualizados: " + user.getPoints());
+            nexpay.getPointManager().addPoints(user.getId(), user.getPoints());
+            nexpay.getRankManager().insertOrUpdate(user.getId(), user.getPoints());
+            nexpay.getPointHistoryManager().register(user.getId(), "Redeemed benefit: " + benefit, user.getPoints());
+            nexpay.getPointHistoryManager().saveHistory();
+        }
+
+        return "redirect:/user/benefits";
+
+
+    }
+
+    @GetMapping("/user/points/history")
+    public String showPointHistory(Model model) {
+        String userId = Session.getUserId();
+        if (userId == null) return "redirect:/login";
+
+        SimpleList<PointHistoryEntry> history = nexpay.getPointHistoryManager().getHistoryForUser(userId);
+        model.addAttribute("history", history);
+        return "user-point-history";
+    }
+
+
+    @GetMapping("/user/graph/categories")
+    public String showCategoryGraph(Model model) {
+        DirectedGraph<String> graph = nexpay.getCategoryGraphManager().getGraph();
+
+        GraphStats stats = GraphStats.calculate(graph);
+
+        model.addAttribute("graphType", "Categorías de Gasto");
+        model.addAttribute("graph", graph.getAllNodes());
+        model.addAttribute("stats", stats);
+        return "graph-analysis";
+    }
+
+
+
+
+
 }
 
 

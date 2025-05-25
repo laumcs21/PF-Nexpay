@@ -1,12 +1,13 @@
 package proyecto.nexpay.web.datastructures;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import java.util.Spliterators;
 import java.util.Spliterator;
 
-public class SimpleList<T> implements Iterable<T> {
+public class SimpleList<T> implements Iterable<T>, Serializable {
 
     private int size;
     private Node<T> firstNode;
@@ -222,6 +223,19 @@ public class SimpleList<T> implements Iterable<T> {
 
     public Stream<T> stream() {
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(this.iterator(), Spliterator.ORDERED), false);
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public boolean contains(T value) {
+        for (int i = 0; i < size(); i++) {
+            if (get(i).equals(value)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

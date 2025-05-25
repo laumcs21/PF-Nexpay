@@ -9,10 +9,7 @@ import proyecto.nexpay.web.persistence.TransactionPersistence;
 import proyecto.nexpay.web.datastructures.SimpleList;
 import proyecto.nexpay.web.datastructures.DoubleLinkedList;
 import proyecto.nexpay.web.persistence.WalletPersistence;
-import proyecto.nexpay.web.service.ScheduledTransactionManager;
-import proyecto.nexpay.web.service.ScheduledTransactionExecutor;
-import proyecto.nexpay.web.service.TransactionManager;
-import proyecto.nexpay.web.service.NotificationManager;
+import proyecto.nexpay.web.service.*;
 
 public class Nexpay implements Serializable {
 
@@ -32,6 +29,11 @@ public class Nexpay implements Serializable {
     private TransactionManager TManager;
     private ScheduledTransactionManager SManager;
     private ScheduledTransactionExecutor executor;
+    private PointManager pointManager;
+    private RankManager rankManager;
+    private static PointHistoryManager pointHistoryManager;
+    private static CategoryGraphManager categoryGraphManager;
+    private static UserTransferGraphManager userTransferGraphManager;
 
     private Thread backupThread;
 
@@ -46,6 +48,11 @@ public class Nexpay implements Serializable {
         this.transactionCRUD = new TransactionCRUD(this);
         this.walletCRUD = new WalletCRUD(this);
         this.TManager = new TransactionManager(this);
+        this.pointManager = new PointManager();
+        this.rankManager = new RankManager();
+        this.pointHistoryManager = new PointHistoryManager();
+        this.categoryGraphManager = new CategoryGraphManager();
+        this.userTransferGraphManager = new UserTransferGraphManager();
 
         this.SManager = new ScheduledTransactionManager(TManager);
         this.executor = new ScheduledTransactionExecutor(SManager);
@@ -61,15 +68,19 @@ public class Nexpay implements Serializable {
                     instance.loadAccountData();
                     instance.loadWalletsData();
                     instance.loadTransactionData();
+                    pointHistoryManager.loadHistory();
+                    categoryGraphManager.loadGraph();
+                    userTransferGraphManager.loadGraph();
                     instance.executor.start();
                 }
             }
         }
+
         return instance;
     }
 
 
-    public SimpleList<User> getUsers() {
+    public SimpleList<User>     getUsers() {
         return users;
     }
 
@@ -140,6 +151,8 @@ public class Nexpay implements Serializable {
             for (User u : persistence.loadUsers()) {
                 walletPersistence.loadWalletsForUser(u);
                 this.users.addLast(u);
+                pointManager.addPoints(u.getId(), u.getPoints());
+                rankManager.insertOrUpdate(u.getId(), u.getPoints());
             }
         } catch (IOException e) {
             System.err.println("Error loading users or wallets: " + e.getMessage());
@@ -196,7 +209,25 @@ public class Nexpay implements Serializable {
         }
     }
 
+    public PointManager getPointManager() {
+        return pointManager;
+    }
 
+    public RankManager getRankManager() {
+        return this.rankManager;
+    }
+
+    public PointHistoryManager getPointHistoryManager() {
+        return this.pointHistoryManager;
+    }
+
+    public CategoryGraphManager getCategoryGraphManager() {
+        return categoryGraphManager;
+    }
+
+    public UserTransferGraphManager getUserTransferGraphManager() {
+        return userTransferGraphManager;
+    }
 }
 
 

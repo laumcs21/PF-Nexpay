@@ -32,7 +32,8 @@ public class UserPersistence {
             userText.append(user.getEmail()).append("@@");
             userText.append(user.getPhone()).append("@@");
             userText.append(user.getAddress()).append("@@");
-            userText.append(user.getTotalBalance()).append("\n");
+            userText.append(user.getTotalBalance()).append("@@");
+            userText.append(user.getPoints()).append("\n");
         }
 
         try {
@@ -50,10 +51,15 @@ public class UserPersistence {
         try {
             for (String userText : content) {
                 String[] split = userText.split("@@");
-                if (split.length == 7) {
-                    User user = new User(split[0], split[1], split[2], split[3], split[4], split[5], Double.parseDouble(split[6]));
+                if (split.length == 8) {
+                    User user = new User(
+                            split[0], split[1], split[2], split[3], split[4], split[5],
+                            Double.parseDouble(split[6])
+                    );
+                    user.setPoints(Integer.parseInt(split[7]));
                     users.addLast(user);
                 }
+
             }
         } catch (Exception e) {
             System.err.println("Error loading users from the file: " + e.getMessage());

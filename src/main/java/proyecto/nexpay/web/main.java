@@ -24,13 +24,6 @@ public class main {
             user.getWalletGraph().addWallet(wallet2);
         }
 
-        // Crear cuentas y asociarlas a monederos
-        Account account1 = new Account(user.getId(), wallet1.getWalletId(), "ACC01", "Bancolombia", "123456", AccountType.AHORRO, 0.0);
-        Account account2 = new Account(user.getId(), wallet2.getWalletId(), "ACC02", "Davivienda", "654321", AccountType.CORRIENTE, 0.0);
-        wallet1.addAccount(account1);
-        wallet2.addAccount(account2);
-        nexpay.getAccountCRUD().create(account1);
-        nexpay.getAccountCRUD().create(account2);
 
         // Crear una transacción directa
         Transaction transaction = new Transaction.Builder(
@@ -51,9 +44,7 @@ public class main {
                 }
             }
 
-            // Mostrar saldos actualizados
-            System.out.println("Saldo cuenta 123456: " + account1.getBalance());
-            System.out.println("Saldo cuenta 654321: " + account2.getBalance());
+
             System.out.println("Saldo Wallet1: " + wallet1.getBalance());
             System.out.println("Saldo Wallet2: " + wallet2.getBalance());
             System.out.println("Saldo total usuario: " + user.getTotalBalance());

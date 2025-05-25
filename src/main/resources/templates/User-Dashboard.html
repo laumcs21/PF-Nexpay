@@ -11,6 +11,10 @@
     <h3>Monedero actual: <span th:text="${walletName}">Monedero</span></h3>
     <p>Saldo del monedero: <strong>$<span th:text="${walletBalance}">0.0</span></strong></p>
 
+    <p>Puntos acumulados: <strong><span th:text="${points}">0</span></strong></p>
+    <p>Rango actual: <strong><span th:text="${rank}">Bronce</span></strong></p>
+
+
     <form th:action="@{/user/accounts}" method="get">
         <button type="submit" class="boton">Ver Cuentas</button>
     </form>
@@ -26,6 +30,18 @@
     <form th:action="@{/user/wallets}" method="get">
         <button type="submit" class="boton-secundario">Cambiar de Monedero</button>
     </form>
+
+    <form th:action="@{/user/benefits}" method="get">
+        <button type="submit" class="boton">Canjear Puntos</button>
+    </form>
+    <form th:action="@{/user/points/history}" method="get">
+        <button type="submit" class="boton">Ver Historial de Puntos</button>
+    </form>
+    <form th:action="@{/user/graph/categories}" method="get">
+        <button type="submit" class="boton">Ver análisis de categorías</button>
+    </form>
+
+
 
     <form th:action="@{/logout}" method="get">
         <button type="submit" class="boton-secundario">Cerrar Sesión</button>

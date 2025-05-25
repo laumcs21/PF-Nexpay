@@ -180,7 +180,8 @@ public class AdminDashboardController {
     public String createAccount(@RequestParam String userId,
                                 @RequestParam String walletId,
                                 @RequestParam String bankName,
-                                @RequestParam AccountType accountType) {
+                                @RequestParam AccountType accountType,
+                                @RequestParam String category) {  // ⬅️ nuevo
         if (!Session.isAdmin()) return "redirect:/login";
 
         User user = nexpay.getUserCRUD().safeRead(userId);
@@ -193,7 +194,7 @@ public class AdminDashboardController {
         double balance = 0.0;
 
         // Crear cuenta
-        Account newAccount = new Account(userId, walletId, generatedId, bankName, generatedAccountNumber, accountType, balance);
+        Account newAccount = new Account(userId, walletId, generatedId, bankName, generatedAccountNumber, accountType, balance, category);
         Account createdAccount;
         try {
             createdAccount = nexpay.getAccountCRUD().create(newAccount);

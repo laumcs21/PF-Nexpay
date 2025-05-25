@@ -36,7 +36,8 @@ public class AccountPersistence {
             accountText.append(account.getBankName()).append("@@");
             accountText.append(account.getAccountNumber()).append("@@");
             accountText.append(account.getAccountType()).append("@@");
-            accountText.append(account.getBalance()).append("\n");
+            accountText.append(account.getBalance()).append("@@");
+            accountText.append(account.getCategory()).append("\n");
         }
 
         try {
@@ -64,17 +65,25 @@ public class AccountPersistence {
             try {
                 String[] split = accountText.split("@@");
                 String userId = split[0];
-                AccountType accountType = AccountType.valueOf(split[split.length - 2]);
-                Account account = new Account(userId,split[1], split[2], split[3], split[4], accountType,
-                        Double.parseDouble(split[6]));
+                String walletId = split[1];
+                String accountId = split[2];
+                String bankName = split[3];
+                String accountNumber = split[4];
+                AccountType accountType = AccountType.valueOf(split[5]);
+                double balance = Double.parseDouble(split[6]);
+                String category = split[7];
+
+                Account account = new Account(userId, walletId, accountId, bankName, accountNumber,
+                        accountType, balance, category);
                 accounts.addLast(account);
             } catch (Exception e) {
-                System.err.println("Error loading accounts from file: " + e.getMessage());
+                System.err.println("Error loading account from line: " + accountText + " — " + e.getMessage());
             }
         }
 
         return accounts;
     }
+
 
     public SimpleList<Account> loadAccountsFromXML() {
         try {
