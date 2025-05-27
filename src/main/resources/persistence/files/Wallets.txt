@@ -1,6 +1,5 @@
 004@@IC9B16@@arriendo@@0.0
 004@@1OTDTO@@Arriendo@@149920.0
-001@@DO472N@@Salario@@992830.1
 001@@GFGOUT@@Trabajo@@220000.0
 001@@HCR617@@Servicios@@500000.0
 003@@H62JJH@@Mercado@@500.0

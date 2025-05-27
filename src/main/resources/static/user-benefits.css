@@ -12,10 +12,10 @@ body {
     min-height: 100vh;
 }
 
-/* Header estilo Bancolombia adaptado a morado */
+/* Header NexPay */
 .header-nexpay {
     background-color: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     padding: 0 40px;
     position: sticky;
     top: 0;
@@ -31,13 +31,11 @@ body {
     justify-content: space-between;
 }
 
-/* Logo NexPay */
 .logo-nexpay {
     height: 70px;
     user-select: none;
 }
 
-/* Navegación horizontal */
 .nav-menu ul {
     list-style: none;
     display: flex;
@@ -60,7 +58,6 @@ body {
     color: white;
 }
 
-/* Botón cerrar sesión */
 .btn-login-header button {
     background-color: #9b59b6;
     border: none;
@@ -77,7 +74,7 @@ body {
     background-color: #7a3299;
 }
 
-/* Main contenedor centrado */
+/* Main container */
 .main-register-container {
     display: flex;
     justify-content: center;
@@ -86,8 +83,8 @@ body {
     padding: 25px;
 }
 
-/* Contenedor cuentas y formularios */
-.contenedor-cuentas {
+/* Beneficios container */
+.contenedor-beneficios {
     background: white;
     padding: 30px 45px;
     border-radius: 16px;
@@ -97,7 +94,7 @@ body {
     text-align: left;
 }
 
-/* Títulos */
+/* Titles */
 .titulo {
     font-size: 2.25rem;
     font-weight: 800;
@@ -106,57 +103,63 @@ body {
     text-align: center;
 }
 
-/* Formularios */
-.formulario-crear,
-.formulario-editar {
-    margin-bottom: 30px;
-}
-
-.formulario-crear h3,
-.formulario-editar h3 {
-    margin-bottom: 18px;
-    color: #5a3683;
-}
-
-.formulario-crear input,
-.formulario-crear select,
-.formulario-editar input,
-.formulario-editar select {
+/* Table Beneficios */
+.tabla-beneficios {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 2px solid #c8b8db;
-    border-radius: 8px;
+    border-collapse: separate;
+    border-spacing: 0 12px;
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    margin-top: 20px;
 }
 
-.formulario-crear input:focus,
-.formulario-crear select:focus,
-.formulario-editar input:focus,
-.formulario-editar select:focus {
-    border-color: #7a5299;
-    outline: none;
+.tabla-beneficios thead tr {
+    background-color: #6e4db5;
+    color: white;
+    font-weight: 700;
+    border-radius: 10px;
+}
+
+.tabla-beneficios th,
+.tabla-beneficios td {
+    padding: 14px 12px;
+    text-align: left;
+}
+
+.tabla-beneficios tbody tr {
+    background-color: #f9f7fb;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(75, 41, 120, 0.12);
+    transition: background-color 0.3s ease;
+}
+
+.tabla-beneficios tbody tr:hover {
+    background-color: #eae4f6;
 }
 
 /* Botones */
 .boton {
-    width: 100%;
     background-color: #6e4db5;
     color: white;
     font-weight: 700;
-    padding: 12px 0;
+    padding: 10px 24px;
     border: none;
     border-radius: 12px;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    white-space: nowrap;
 }
 
-.boton:hover {
+.boton:hover:enabled {
     background-color: #553b84;
 }
 
+.boton:disabled {
+    background-color: #b4a7d6;
+    cursor: not-allowed;
+}
+
+/* Botón volver */
 .boton-secundario {
     background-color: transparent;
     color: #6e4db5;
@@ -172,80 +175,12 @@ body {
     display: block;
     margin-left: auto;
     margin-right: auto;
+    margin-top: 30px;
 }
 
 .boton-secundario:hover {
     background-color: #6e4db5;
     color: white;
-}
-
-/* Tabla cuentas */
-.tabla-cuentas {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 12px;
-    font-size: 1rem;
-}
-
-.tabla-cuentas thead tr {
-    background-color: #6e4db5;
-    color: white;
-    font-weight: 700;
-    border-radius: 10px;
-}
-
-.tabla-cuentas th,
-.tabla-cuentas td {
-    padding: 14px 12px;
-    text-align: left;
-}
-
-.tabla-cuentas tbody tr {
-    background-color: #f9f7fb;
-    border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(75, 41, 120, 0.12);
-    transition: background-color 0.3s ease;
-}
-
-.tabla-cuentas tbody tr:hover {
-    background-color: #eae4f6;
-}
-
-/* Acciones en tabla */
-.acciones-td {
-    display: flex;
-    gap: 10px;
-}
-
-/* Botones editar y eliminar */
-.boton-editar,
-.boton-rojo {
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 1rem;
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.3s ease, color 0.3s ease;
-    user-select: none;
-}
-
-.boton-editar {
-    background-color: #6e4db5;
-    color: white;
-}
-
-.boton-editar:hover {
-    background-color: #553b84;
-}
-
-.boton-rojo {
-    background-color: #d9534f;
-    color: white;
-}
-
-.boton-rojo:hover {
-    background-color: #c12d23;
 }
 
 /* Mensajes */
@@ -265,7 +200,7 @@ body {
 
 /* Responsive */
 @media (max-width: 480px) {
-    .contenedor-cuentas {
+    .contenedor-beneficios {
         padding: 20px 25px;
         max-width: 95vw;
     }
@@ -274,7 +209,7 @@ body {
         font-size: 1.75rem;
     }
 
-    .tabla-cuentas {
+    .tabla-beneficios {
         font-size: 0.9rem;
     }
 }

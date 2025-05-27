@@ -1,74 +1,102 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Canje de Puntos - Nexpay</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/user-benefits.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body class="pagina-usuario">
-<div class="contenedor-beneficios">
-    <h2 class="titulo">Canje de Puntos</h2>
-    <!-- Success Message -->
-    <p th:if="${successMessage}" class="alerta-exito" th:text="${successMessage}"></p>
 
-    <!-- Error Message -->
-    <p th:if="${errorMessage}" class="alerta-error" th:text="${errorMessage}"></p>
+<header class="header-nexpay">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="/images/logoNexp.png" alt="Nexpay Logo" class="logo-nexpay" />
+        </div>
 
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="#">Mis Cuentas</a></li>
+                <li><a href="#">Canje de Puntos</a></li>
+                <li><a href="#">Configuración</a></li>
+            </ul>
+        </nav>
 
-    <p><strong>Puntos actuales:</strong> <span th:text="${points}">0</span></p>
-    <p><strong>Rango actual:</strong> <span th:text="${rank}">Bronce</span></p>
+        <div class="btn-login-header">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="boton-secundario">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</header>
 
-    <h3>Beneficios Disponibles</h3>
-    <table class="tabla-beneficios">
-        <thead>
-        <tr>
-            <th>Descripción</th>
-            <th>Puntos Requeridos</th>
-            <th>Acción</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>10% descuento en comisiones</td>
-            <td>100</td>
-            <td>Rango mínimo: Plata</td>
-            <td>
-                <form th:action="@{/user/redeem}" method="post">
-                    <input type="hidden" name="benefit" value="discount" />
-                    <button type="submit" th:disabled="${points < 100}">Canjear</button>
-                </form>
-            </td>
-        </tr>
+<main class="main-register-container">
+    <section class="contenedor-beneficios">
+        <h2 class="titulo">Canje de Puntos</h2>
 
-        <tr>
-            <td>Un mes sin cargos por retiro</td>
-            <td>500</td>
-            <td>Rango mínimo: Oro</td>
-            <td>
-                <form th:action="@{/user/redeem}" method="post">
-                    <input type="hidden" name="benefit" value="free_withdrawals">
-                    <button type="submit" th:disabled="${points < 500}">Canjear</button>
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <td>Bono de $50 en el monedero</td>
-            <td>1000</td>
-            <td>Rango mínimo: Platino</td>
-            <td>
-                <form th:action="@{/user/redeem}" method="post">
-                    <input type="hidden" name="benefit" value="bonus_50">
-                    <button type="submit" th:disabled="${points < 1000}">Canjear</button>
-                </form>
-            </td>
-        </tr>
+        <!-- Mensajes -->
+        <p th:if="${successMessage}" class="mensaje-exito" th:text="${successMessage}"></p>
+        <p th:if="${errorMessage}" class="mensaje-error" th:text="${errorMessage}"></p>
 
-        </tbody>
-    </table>
+        <!-- Información del usuario -->
+        <p><strong>Puntos actuales:</strong> <span th:text="${points}">0</span></p>
+        <p><strong>Rango actual:</strong> <span th:text="${rank}">Bronce</span></p>
 
-    <form th:action="@{/dashboard}" method="get">
-        <button type="submit" class="boton-secundario">Volver al Panel</button>
-    </form>
-</div>
+        <h3>Beneficios Disponibles</h3>
+        <table class="tabla-beneficios">
+            <thead>
+            <tr>
+                <th>Descripción</th>
+                <th>Puntos Requeridos</th>
+                <th>Rango Mínimo</th>
+                <th>Acción</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>10% descuento en comisiones</td>
+                <td>100</td>
+                <td>Plata</td>
+                <td>
+                    <form th:action="@{/user/redeem}" method="post">
+                        <input type="hidden" name="benefit" value="discount" />
+                        <button type="submit" th:disabled="${points < 100}" class="boton">Canjear</button>
+                    </form>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Un mes sin cargos por retiro</td>
+                <td>500</td>
+                <td>Oro</td>
+                <td>
+                    <form th:action="@{/user/redeem}" method="post">
+                        <input type="hidden" name="benefit" value="free_withdrawals" />
+                        <button type="submit" th:disabled="${points < 500}" class="boton">Canjear</button>
+                    </form>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Bono de $50 en el monedero</td>
+                <td>1000</td>
+                <td>Platino</td>
+                <td>
+                    <form th:action="@{/user/redeem}" method="post">
+                        <input type="hidden" name="benefit" value="bonus_50" />
+                        <button type="submit" th:disabled="${points < 1000}" class="boton">Canjear</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <form th:action="@{/dashboard}" method="get" style="margin-top: 30px;">
+            <button type="submit" class="boton-secundario">Volver al Panel</button>
+        </form>
+    </section>
+</main>
+
 </body>
 </html>
