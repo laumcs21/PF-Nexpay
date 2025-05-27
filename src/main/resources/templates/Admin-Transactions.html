@@ -1,84 +1,127 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Gestión de Transacciones - Admin</title>
+    <link rel="stylesheet" th:href="@{/admin-accounts.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
-<body>
+<body class="pagina-admin">
 
-<h2>Gestión de Transacciones</h2>
+<!-- Header con logo y navegación -->
+<header class="header-nexpay">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="/images/logoNexp.png" alt="Nexpay Logo" class="logo-nexpay" />
+        </div>
 
-<h3>Crear nueva transacción</h3>
-<form th:action="@{/admin/transactions}" method="post">
-    <label for="userId">ID Usuario:</label>
-    <input type="text" id="userId" name="userId" required><br>
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="#">Gestión de Usuarios</a></li>
+                <li><a href="#">Gestión de Cuentas</a></li>
+                <li><a href="#">Gestión de Monederos</a></li>
+                <li><a href="#">Transacciones</a></li>
+            </ul>
+        </nav>
 
-    <label for="sourceAccountNumber">Cuenta origen:</label>
-    <input type="text" id="sourceAccountNumber" name="sourceAccountNumber" required><br>
+        <div class="btn-login-header">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="boton-secundario">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</header>
 
-    <label for="destinationAccountNumber">Cuenta destino (solo para transferencias):</label>
-    <input type="text" id="destinationAccountNumber" name="destinationAccountNumber"><br>
+<!-- Contenedor principal -->
+<main class="main-register-container">
+    <section class="register-form-container admin-panel">
+        <h2 class="titulo">Gestión de Transacciones</h2>
 
-    <label for="type">Tipo:</label>
-    <select id="type" name="type">
-        <option value="DEPOSITO">Depósito</option>
-        <option value="RETIRO">Retiro</option>
-        <option value="TRANSFERENCIA">Transferencia</option>
-    </select><br>
+        <!-- Formulario creación -->
+        <form th:action="@{/admin/transactions}" method="post" class="formulario">
+            <label for="userId">ID Usuario:</label>
+            <input type="text" id="userId" name="userId" required />
 
-    <label for="amount">Monto:</label>
-    <input type="number" id="amount" name="amount" step="0.01" required><br>
+            <label for="sourceAccountNumber">Cuenta origen:</label>
+            <input type="text" id="sourceAccountNumber" name="sourceAccountNumber" required />
 
-    <label for="description">Descripción:</label>
-    <input type="text" id="description" name="description"><br>
+            <label for="destinationAccountNumber">Cuenta destino (solo para transferencias):</label>
+            <input type="text" id="destinationAccountNumber" name="destinationAccountNumber" />
 
-    <button type="submit">Ejecutar Transacción</button>
-</form>
+            <label for="type">Tipo:</label>
+            <select id="type" name="type">
+                <option value="DEPOSITO">Depósito</option>
+                <option value="RETIRO">Retiro</option>
+                <option value="TRANSFERENCIA">Transferencia</option>
+            </select>
 
-<form th:action="@{/admin/transactions}" method="get">
-    <input type="text" name="search" placeholder="Buscar por ID" th:value="${search}">
-    <button type="submit">Buscar</button>
-</form>
+            <label for="amount">Monto:</label>
+            <input type="number" id="amount" name="amount" step="0.01" required />
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Fecha</th>
-        <th>Tipo</th>
-        <th>Monto</th>
-        <th>Cuenta Origen</th>
-        <th>Cuenta Destino</th>
-        <th>ID Usuario</th>
-        <th>ID Monedero</th> <!-- Nueva columna -->
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="transaction : ${transactions}">
-        <td th:text="${transaction.id}">ID</td>
-        <td th:text="${transaction.date}">Fecha</td>
-        <td th:text="${transaction.type}">Tipo</td>
-        <td th:text="${transaction.amount}">Monto</td>
-        <td th:text="${transaction.sourceAccountNumber}">Origen</td>
-        <td th:text="${transaction.destinationAccountNumber}">Destino</td>
-        <td th:text="${transaction.userId}">Usuario</td>
-        <td th:text="${transaction.walletId}">Monedero</td> <!-- Mostrar walletId -->
-    </tr>
-    </tbody>
-</table>
+            <label for="description">Descripción:</label>
+            <input type="text" id="description" name="description" />
 
+            <button type="submit" class="boton">Ejecutar Transacción</button>
+        </form>
 
-<form th:action="@{/admin/transactions/undo}" method="post">
-    <button type="submit">Revertir Última Transacción</button>
-</form>
+        <!-- Formulario búsqueda -->
+        <form th:action="@{/admin/transactions}" method="get" class="formulario-secundario">
+            <input
+                    type="text"
+                    name="search"
+                    placeholder="Buscar por ID"
+                    th:value="${search}"
+                    class="input-buscar"
+            />
+            <button type="submit" class="boton-buscar">Buscar</button>
+        </form>
 
-<form th:action="@{/admin-dashboard}" method="get">
-    <button type="submit" class="boton-secundario">Volver al Panel</button>
-</form>
+        <!-- Tabla de transacciones -->
+        <table class="tabla-cuentas">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Monto</th>
+                <th>Cuenta Origen</th>
+                <th>Cuenta Destino</th>
+                <th>ID Usuario</th>
+                <th>ID Monedero</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="transaction : ${transactions}">
+                <td th:text="${transaction.id}">ID</td>
+                <td th:text="${transaction.date}">Fecha</td>
+                <td th:text="${transaction.type}">Tipo</td>
+                <td th:text="${transaction.amount}">Monto</td>
+                <td th:text="${transaction.sourceAccountNumber}">Origen</td>
+                <td th:text="${transaction.destinationAccountNumber}">Destino</td>
+                <td th:text="${transaction.userId}">Usuario</td>
+                <td th:text="${transaction.walletId}">Monedero</td>
+            </tr>
+            </tbody>
+        </table>
 
-<div th:if="${errorMessage}" style="color: red; font-weight: bold;">
-    <p th:text="${errorMessage}"></p>
-</div>
+        <!-- Botón revertir última transacción -->
+        <form th:action="@{/admin/transactions/undo}" method="post" style="margin-top: 20px;">
+            <button type="submit" class="boton-secundario">Revertir Última Transacción</button>
+        </form>
+
+        <!-- Botón volver al panel -->
+        <form th:action="@{/admin-dashboard}" method="get" style="margin-top: 20px;">
+            <button type="submit" class="boton-secundario">Volver al Panel</button>
+        </form>
+
+        <!-- Mensaje de error -->
+        <div th:if="${errorMessage}" style="color: red; font-weight: bold; margin-top: 15px;">
+            <p th:text="${errorMessage}"></p>
+        </div>
+    </section>
+</main>
 
 </body>
 </html>
+

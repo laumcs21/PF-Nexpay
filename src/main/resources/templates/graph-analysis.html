@@ -1,49 +1,78 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Graph Analysis</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
-
+    <meta charset="UTF-8" />
+    <title>Análisis de Grafos - Nexpay</title>
+    <link rel="stylesheet" th:href="@{/graph-analysis.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body class="pagina-usuario">
-<div class="contenedor-analisis">
-    <h2 class="titulo">Graph Analysis</h2>
 
-    <div class="resumen-estadistico">
-        <h3>Resumen Estadístico</h3>
-        <ul>
-            <li><strong>Total de nodos:</strong> <span th:text="${stats.totalNodes}">0</span></li>
-            <li><strong>Total de relaciones:</strong> <span th:text="${stats.totalEdges}">0</span></li>
-            <li><strongNodo con más salidas:</strong> <span th:text="${stats.mostOutgoingNode}">N/A</span></li>
-            <li><strongNodo con más entradas:</strong> <span th:text="${stats.mostIncomingNode}">N/A</span></li>
-        </ul>
+<!-- Header con logo y navegación -->
+<header class="header-nexpay">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="/images/logoNexp.png" alt="Nexpay Logo" class="logo-nexpay" />
+        </div>
+
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="#">Análisis de Grafos</a></li>
+                <li><a href="#">Categorías</a></li>
+                <li><a href="#">Reportes</a></li>
+            </ul>
+        </nav>
+
+        <div class="btn-login-header">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="boton-secundario">Cerrar sesión</button>
+            </form>
+        </div>
     </div>
+</header>
 
-    <p><strong>Tipo de análisis:</strong> <span th:text="${graphType}">Categorías</span></p>
+<!-- Contenedor principal -->
+<main class="main-register-container">
+    <section class="contenedor-analisis register-form-container">
+        <h2 class="titulo">Análisis de Grafos</h2>
 
-    <table class="tabla-grafo">
-        <thead>
-        <tr>
-            <th>Nodo origen</th>
-            <th>Destinos relacionados</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="node : ${graph}">
-            <td th:text="${node.value}">Transporte</td>
-            <td>
-                <ul>
-                    <li th:each="dest : ${node.adjacency}" th:text="${dest}">Comida</li>
-                </ul>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+        <div class="resumen-estadistico">
+            <h3>Resumen Estadístico</h3>
+            <ul>
+                <li><strong>Total de nodos:</strong> <span th:text="${stats.totalNodes}">0</span></li>
+                <li><strong>Total de relaciones:</strong> <span th:text="${stats.totalEdges}">0</span></li>
+                <li><strong>Nodo con más salidas:</strong> <span th:text="${stats.mostOutgoingNode}">N/A</span></li>
+                <li><strong>Nodo con más entradas:</strong> <span th:text="${stats.mostIncomingNode}">N/A</span></li>
+            </ul>
+        </div>
 
-    <form th:action="@{/dashboard}" method="get">
-        <button type="submit" class="boton-secundario">Volver al Panel</button>
-    </form>
-</div>
+        <p><strong>Tipo de análisis:</strong> <span th:text="${graphType}">Categorías</span></p>
+
+        <table class="tabla-grafo">
+            <thead>
+            <tr>
+                <th>Nodo origen</th>
+                <th>Destinos relacionados</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="node : ${graph}">
+                <td th:text="${node.value}">Transporte</td>
+                <td>
+                    <ul>
+                        <li th:each="dest : ${node.adjacency}" th:text="${dest}">Comida</li>
+                    </ul>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <form th:action="@{/dashboard}" method="get" style="margin-top: 30px; max-width: 250px; margin-left: auto; margin-right: auto;">
+            <button type="submit" class="boton-secundario">Volver al Panel</button>
+        </form>
+    </section>
+</main>
+
 </body>
 </html>

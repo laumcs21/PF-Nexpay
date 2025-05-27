@@ -1,102 +1,129 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Mis Cuentas - Nexpay</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/user-accounts.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body class="pagina-usuario">
-<div class="contenedor-cuentas">
-    <h2 class="titulo">Mis Cuentas</h2>
 
-    <!-- Mensajes de éxito o error -->
-    <p th:if="${successMessage}" class="mensaje-exito" th:text="${successMessage}"></p>
-    <p th:if="${errorMessage}" class="mensaje-error" th:text="${errorMessage}"></p>
+<!-- Header con logo y navegación -->
+<header class="header-nexpay">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="/images/logoNexp.png" alt="Nexpay Logo" class="logo-nexpay" />
+        </div>
 
-    <!-- Formulario para crear una nueva cuenta -->
-    <form th:action="@{/user/accounts}" method="post" class="formulario-crear">
-        <h3>Crear Nueva Cuenta</h3>
-        <input type="text" name="bankName" placeholder="Nombre del banco" required>
-        <select name="accountType" required>
-            <option value="">Tipo de cuenta</option>
-            <option value="AHORRO">Ahorros</option>
-            <option value="CORRIENTE">Corriente</option>
-        </select>
-        <label for="category">Categoría:</label>
-        <select name="category" id="category" required>
-            <option value="Ahorro">Ahorro</option>
-            <option value="Comida">Comida</option>
-            <option value="Servicios">Servicios</option>
-            <option value="Educación">Educación</option>
-            <option value="Salud">Salud</option>
-        </select>
-        <button type="submit" class="boton">Crear Cuenta</button>
-    </form>
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="#">Mis Cuentas</a></li>
+                <li><a href="#">Monederos</a></li>
+                <li><a href="#">Transacciones</a></li>
+                <li><a href="#">Perfil</a></li>
+            </ul>
+        </nav>
 
-    <br>
-
-    <!-- Tabla de cuentas del usuario -->
-    <table class="tabla-cuentas">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Número</th>
-            <th>Banco</th>
-            <th>Tipo</th>
-            <th>Saldo</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="account : ${accounts}">
-            <td th:text="${account.id}">ID</td>
-            <td th:text="${account.accountNumber}">Número</td>
-            <td th:text="${account.bankName}">Banco</td>
-            <td th:text="${account.accountType}">Tipo</td>
-            <td th:text="${account.balance}">0.0</td>
-            <td>
-                <form th:action="@{/user/account/delete}" method="post" style="display:inline;"
-                      onsubmit="return confirm('¿Deseas eliminar esta cuenta?');">
-                    <input type="hidden" name="id" th:value="${account.id}">
-                    <button type="submit" class="boton-rojo">Eliminar</button>
-                </form>
-                <form th:action="@{/user/accounts}" method="get" style="display:inline;">
-                    <input type="hidden" name="editId" th:value="${account.id}">
-                    <button type="submit" class="boton">Editar</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div th:if="${accountToEdit != null}">
-        <h3>Editar cuenta</h3>
-        <form th:action="@{/user/account/update}" method="post">
-            <input type="hidden" name="id" th:value="${accountToEdit.id}"/>
-
-            <label>Banco:</label>
-            <input type="text" name="bankName" th:value="${accountToEdit.bankName}" required/>
-
-            <label>Tipo de cuenta:</label>
-            <select name="accountType" required>
-                <option th:each="type : ${T(proyecto.nexpay.web.model.AccountType).values()}"
-                        th:value="${type}"
-                        th:text="${type}"
-                        th:selected="${type == accountToEdit.accountType}">Tipo</option>
-            </select>
-
-            <input type="hidden" name="balance" th:value="${accountToEdit.balance}"/>
-
-            <button type="submit" class="boton">Actualizar</button>
-        </form>
+        <div class="btn-login-header">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="boton-secundario">Cerrar sesión</button>
+            </form>
+        </div>
     </div>
+</header>
 
-    <br>
+<!-- Contenedor principal -->
+<main class="main-register-container">
+    <section class="contenedor-cuentas register-form-container">
+        <h2 class="titulo">Mis Cuentas</h2>
 
-    <form th:action="@{/dashboard}" method="get">
-        <button type="submit" class="boton-secundario">Volver al Panel</button>
-    </form>
+        <!-- Mensajes -->
+        <p th:if="${successMessage}" class="mensaje-exito" th:text="${successMessage}"></p>
+        <p th:if="${errorMessage}" class="mensaje-error" th:text="${errorMessage}"></p>
 
-</div>
+        <!-- Formulario crear cuenta -->
+        <form th:action="@{/user/accounts}" method="post" class="formulario-crear">
+            <h3>Crear Nueva Cuenta</h3>
+            <input type="text" name="bankName" placeholder="Nombre del banco" required />
+            <select name="accountType" required>
+                <option value="" disabled selected>Tipo de cuenta</option>
+                <option value="AHORRO">Ahorros</option>
+                <option value="CORRIENTE">Corriente</option>
+            </select>
+            <label for="category">Categoría:</label>
+            <select name="category" id="category" required>
+                <option value="Ahorro">Ahorro</option>
+                <option value="Comida">Comida</option>
+                <option value="Servicios">Servicios</option>
+                <option value="Educación">Educación</option>
+                <option value="Salud">Salud</option>
+            </select>
+            <button type="submit" class="boton">Crear Cuenta</button>
+        </form>
+
+        <!-- Tabla cuentas -->
+        <table class="tabla-cuentas">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Número</th>
+                <th>Banco</th>
+                <th>Tipo</th>
+                <th>Saldo</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="account : ${accounts}">
+                <td th:text="${account.id}">ID</td>
+                <td th:text="${account.accountNumber}">Número</td>
+                <td th:text="${account.bankName}">Banco</td>
+                <td th:text="${account.accountType}">Tipo</td>
+                <td th:text="${account.balance}">0.0</td>
+                <td class="acciones-td">
+                    <form th:action="@{/user/account/delete}" method="post" style="display:inline;"
+                          onsubmit="return confirm('¿Deseas eliminar esta cuenta?');">
+                        <input type="hidden" name="id" th:value="${account.id}" />
+                        <button type="submit" class="boton-rojo">Eliminar</button>
+                    </form>
+                    <form th:action="@{/user/accounts}" method="get" style="display:inline;">
+                        <input type="hidden" name="editId" th:value="${account.id}" />
+                        <button type="submit" class="boton">Editar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Formulario editar cuenta -->
+        <div th:if="${accountToEdit != null}" class="formulario-editar">
+            <h3>Editar cuenta</h3>
+            <form th:action="@{/user/account/update}" method="post" class="formulario">
+                <input type="hidden" name="id" th:value="${accountToEdit.id}" />
+
+                <label>Banco:</label>
+                <input type="text" name="bankName" th:value="${accountToEdit.bankName}" required />
+
+                <label>Tipo de cuenta:</label>
+                <select name="accountType" required>
+                    <option th:each="type : ${T(proyecto.nexpay.web.model.AccountType).values()}"
+                            th:value="${type}"
+                            th:text="${type}"
+                            th:selected="${type == accountToEdit.accountType}">Tipo</option>
+                </select>
+
+                <input type="hidden" name="balance" th:value="${accountToEdit.balance}" />
+
+                <button type="submit" class="boton">Actualizar</button>
+            </form>
+        </div>
+
+        <form th:action="@{/dashboard}" method="get" style="margin-top: 30px; max-width: 250px; margin-left: auto; margin-right: auto;">
+            <button type="submit" class="boton-secundario">Volver al Panel</button>
+        </form>
+    </section>
+</main>
+
 </body>
 </html>

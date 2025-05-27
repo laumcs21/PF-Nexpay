@@ -1,127 +1,182 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Gestión de Cuentas - Admin</title>
+    <link rel="stylesheet" th:href="@{/admin-accounts.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
 
-<h2>Gestión de Cuentas</h2>
+<!-- Header con logo y navegación -->
+<header class="header-nexpay">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="/images/logoNexp.png" alt="Nexpay Logo" class="logo-nexpay" />
+        </div>
 
-<div th:if="${param.error != null and param.error[0] == 'userNotFound'}" style="color:red; font-weight:bold;">
-    Error: El usuario no está registrado.
-</div>
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#">Inicio</a></li>
+                <li><a href="#">Gestión de Cuentas</a></li>
+                <li><a href="#">Servicios</a></li>
+                <li><a href="#">Trámites</a></li>
+            </ul>
+        </nav>
 
-<h3>Crear nueva cuenta</h3>
-<form th:action="@{/admin/accounts}" method="post">
-    <label for="userId">ID Usuario:</label>
-    <input type="text" id="userId" name="userId" required><br>
+        <div class="btn-login-header">
+            <button>Salir</button>
+        </div>
+    </div>
+</header>
 
-    <label for="walletId">ID del Monedero:</label>
-    <input type="text" id="walletId" name="walletId" required><br>
+<!-- Main contenedor de gestión de cuentas -->
+<main class="main-register-container">
+    <section class="register-form-container">
+        <h2 class="titulo">Gestión de Cuentas</h2>
 
-    <label for="bankName">Banco:</label>
-    <input type="text" id="bankName" name="bankName" required><br>
+        <!-- Mensaje de error -->
+        <div th:if="${param.error != null and param.error[0] == 'userNotFound'}" class="error">
+            Error: El usuario no está registrado.
+        </div>
 
-    <label for="accountType">Tipo de Cuenta:</label>
-    <select id="accountType" name="accountType">
-        <option value="AHORRO">Ahorro</option>
-        <option value="CORRIENTE">Corriente</option>
-    </select><br>
+        <!-- Formulario para crear cuenta -->
+        <h3>Crear nueva cuenta</h3>
+        <form th:action="@{/admin/accounts}" method="post" class="formulario">
+            <label for="userId">ID Usuario:</label>
+            <input type="text" id="userId" name="userId" required /><br />
 
-    <label for="category">Categoría:</label>
-    <select name="category" id="category" required>
-        <option value="Ahorro">Ahorro</option>
-        <option value="Comida">Comida</option>
-        <option value="Servicios">Servicios</option>
-        <option value="Educación">Educación</option>
-        <option value="Salud">Salud</option>
-    </select>
+            <label for="walletId">ID del Monedero:</label>
+            <input type="text" id="walletId" name="walletId" required /><br />
 
+            <label for="bankName">Banco:</label>
+            <input type="text" id="bankName" name="bankName" required /><br />
 
-    <button type="submit">Crear Cuenta</button>
-</form>
+            <label for="accountType">Tipo de Cuenta:</label>
+            <select id="accountType" name="accountType">
+                <option value="AHORRO">Ahorro</option>
+                <option value="CORRIENTE">Corriente</option>
+            </select><br />
 
-<form th:action="@{/admin/accounts}" method="get">
-    <input type="text" name="search" placeholder="Buscar por ID o Usuario" th:value="${search}">
-    <button type="submit">Buscar</button>
-</form>
+            <label for="category">Categoría:</label>
+            <select name="category" id="category" required>
+                <option value="Ahorro">Ahorro</option>
+                <option value="Comida">Comida</option>
+                <option value="Servicios">Servicios</option>
+                <option value="Educación">Educación</option>
+                <option value="Salud">Salud</option>
+            </select>
 
-<table border="1">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Banco</th>
-        <th>Tipo</th>
-        <th>Número de Cuenta</th>
-        <th>Saldo</th>
-        <th>ID Usuario</th>
-        <th>ID Monedero</th>
-        <th>Acciones</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="account : ${accounts}">
-        <td th:text="${account.id}">ID</td>
-        <td th:text="${account.bankName}">Banco</td>
-        <td th:text="${account.accountType.name()}">Tipo</td>
-        <td th:text="${account.accountNumber}">Número de Cuenta</td>
-        <td th:text="${account.balance}">Saldo</td>
-        <td th:text="${account.userId}">ID Usuario</td>
-        <td th:text="${account.walletId}">ID Monedero</td>
-        <td>
-            <a th:href="@{/admin/accounts?editId={id}(id=${account.id})}">Editar</a>
-            <form th:action="@{/admin/account/delete}" method="post" style="display:inline;">
-                <input type="hidden" name="id" th:value="${account.id}">
-                <button type="submit">Eliminar</button>
+            <button type="submit" class="boton">Crear Cuenta</button>
+        </form>
+
+        <!-- Formulario de búsqueda -->
+        <form th:action="@{/admin/accounts}" method="get" class="formulario-secundario">
+            <input
+                    type="text"
+                    name="search"
+                    placeholder="Buscar por ID o Usuario"
+                    th:value="${search}"
+                    class="input-buscar"
+            />
+            <button type="submit" class="boton-buscar">Buscar</button>
+        </form>
+
+        <!-- Tabla de cuentas -->
+        <table class="tabla-cuentas">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Banco</th>
+                <th>Tipo</th>
+                <th>Número de Cuenta</th>
+                <th>Saldo</th>
+                <th>ID Usuario</th>
+                <th>ID Monedero</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="account : ${accounts}">
+                <td th:text="${account.id}">ID</td>
+                <td th:text="${account.bankName}">Banco</td>
+                <td th:text="${account.accountType.name()}">Tipo</td>
+                <td th:text="${account.accountNumber}">Número de Cuenta</td>
+                <td th:text="${account.balance}">Saldo</td>
+                <td th:text="${account.userId}">ID Usuario</td>
+                <td th:text="${account.walletId}">ID Monedero</td>
+                <td class="acciones-td">
+                    <a href="#" th:attr="data-id=${account.id}" class="boton-editar btn-accion">Editar</a>
+                    <form th:action="@{/admin/account/delete}" method="post" style="display:inline;">
+                        <input type="hidden" name="id" th:value="${account.id}" />
+                        <button type="submit" class="boton-eliminar btn-accion">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <!-- Formulario para editar cuenta -->
+        <div id="form-editar-cuenta" th:if="${accountToEdit != null}">
+            <h3>Editar Cuenta</h3>
+            <form th:action="@{/admin/account/update}" method="post" th:object="${accountToEdit}" class="formulario">
+                <input type="hidden" th:field="*{id}" />
+
+                <label for="editUserId">ID Usuario:</label>
+                <input type="text" id="editUserId" th:field="*{userId}" readonly /><br />
+
+                <label for="editWalletId">ID Monedero:</label>
+                <input type="text" id="editWalletId" th:field="*{walletId}" readonly /><br />
+
+                <label for="editBankName">Banco:</label>
+                <input type="text" id="editBankName" th:field="*{bankName}" required /><br />
+
+                <label for="editAccountType">Tipo de Cuenta:</label>
+                <select id="editAccountType" th:field="*{accountType}">
+                    <option value="AHORRO" th:selected="${accountToEdit.accountType.name() == 'AHORRO'}">
+                        Ahorro
+                    </option>
+                    <option value="CORRIENTE" th:selected="${accountToEdit.accountType.name() == 'CORRIENTE'}">
+                        Corriente
+                    </option>
+                </select><br />
+
+                <label for="editAccountNumber">Número de Cuenta:</label>
+                <input type="text" id="editAccountNumber" th:field="*{accountNumber}" readonly /><br />
+
+                <label for="editBalance">Saldo:</label>
+                <input type="number" id="editBalance" th:field="*{balance}" readonly /><br />
+
+                <button type="submit" class="boton">Actualizar Cuenta</button>
             </form>
-        </td>
-    </tr>
-    </tbody>
-</table>
+        </div>
 
-<!-- Formulario para editar cuenta -->
-<div th:if="${accountToEdit != null}">
-    <h3>Editar Cuenta</h3>
-    <form th:action="@{/admin/account/update}" method="post" th:object="${accountToEdit}">
-        <input type="hidden" th:field="*{id}" />
+        <!-- Botón para volver al panel -->
+        <form th:action="@{/admin-dashboard.css}" method="get">
+            <button type="submit" class="boton-secundario">Volver al Panel</button>
+        </form>
+    </section>
+</main>
 
-        <label for="editUserId">ID Usuario:</label>
-        <input type="text" id="editUserId" th:field="*{userId}" readonly/><br>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Al hacer clic en editar, cambia url con editId y hace scroll al formulario edición
+        document.querySelectorAll('.boton-editar').forEach((boton) => {
+            boton.addEventListener('click', (e) => {
+                e.preventDefault();
+                const id = boton.getAttribute('data-id');
+                const url = new URL(window.location.href);
+                url.searchParams.set('editId', id);
+                window.location.href = url.toString();
+            });
+        });
 
-        <label for="editWalletId">ID Monedero:</label>
-        <input type="text" id="editWalletId" th:field="*{walletId}" readonly/><br>
-
-        <label for="editBankName">Banco:</label>
-        <input type="text" id="editBankName" th:field="*{bankName}" required/><br>
-
-        <label for="editAccountType">Tipo de Cuenta:</label>
-        <select id="editAccountType" th:field="*{accountType}">
-            <option value="AHORRO" th:selected="${accountToEdit.accountType.name() == 'AHORRO'}">Ahorro</option>
-            <option value="CORRIENTE" th:selected="${accountToEdit.accountType.name() == 'CORRIENTE'}">Corriente</option>
-        </select><br>
-
-        <label for="editAccountNumber">Número de Cuenta:</label>
-        <input type="text" id="editAccountNumber" th:field="*{accountNumber}" readonly/><br>
-
-        <label for="editBalance">Saldo:</label>
-        <input type="number" id="editBalance" th:field="*{balance}" readonly/><br>
-
-        <button type="submit">Actualizar Cuenta</button>
-    </form>
-</div>
-
-<form th:action="@{/admin-dashboard}" method="get">
-    <button type="submit" class="boton-secundario">Volver al Panel</button>
-</form>
+        const formEditar = document.getElementById('form-editar-cuenta');
+        if (formEditar) {
+            formEditar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+</script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-

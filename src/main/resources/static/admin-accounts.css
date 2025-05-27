@@ -1,0 +1,273 @@
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: #f6f6f6;
+    color: #4b2978;
+    min-height: 100vh;
+}
+
+/* Header estilo Bancolombia adaptado a morado */
+.header-nexpay {
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Logo NexPay */
+.logo-nexpay {
+    height: 70px;
+    user-select: none;
+}
+
+/* Navegación horizontal */
+.nav-menu ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-menu ul li a {
+    text-decoration: none;
+    color: #4b2978;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px 10px;
+    transition: color 0.3s ease;
+}
+
+.nav-menu ul li a:hover {
+    color: #6e4db5;
+}
+
+/* Botón salir en header */
+.btn-login-header button {
+    background-color: #ffd400; /* Amarillo parecido Bancolombia */
+    border: none;
+    border-radius: 20px;
+    padding: 10px 24px;
+    font-weight: 700;
+    color: #222;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+.btn-login-header button:hover {
+    background-color: #ffcc00;
+}
+
+/* Main contenedor centrado */
+.main-register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 70px);
+    padding: 20px;
+}
+
+/* Contenedor formulario registro */
+.register-form-container {
+    background: white;
+    padding: 25px 40px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 900px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Título */
+.titulo {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #4b2978;
+}
+
+/* Labels formulario */
+.formulario label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #5a3683;
+    text-align: left;
+    font-size: 1rem;
+}
+
+/* Inputs */
+.formulario input,
+.formulario select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 2px solid #c8b8db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.formulario input:focus,
+.formulario select:focus {
+    border-color: #7a5299;
+    outline: none;
+}
+
+/* Botones */
+.boton {
+    width: 100%;
+    background-color: #6e4db5;
+    color: white;
+    font-weight: 700;
+    padding: 12px 0;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.boton:hover {
+    background-color: #553b84;
+}
+
+.boton-secundario {
+    background-color: transparent;
+    color: #6e4db5;
+    border: 2px solid #6e4db5;
+    font-weight: 700;
+    padding: 12px 0;
+    width: 100%;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.boton-secundario:hover {
+    background-color: #6e4db5;
+    color: white;
+}
+
+/* Tabla de cuentas */
+.tabla-cuentas {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tabla-cuentas th,
+.tabla-cuentas td {
+    padding: 12px 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.acciones-td {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Botones Editar y Eliminar */
+.boton-editar,
+.boton-eliminar {
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    user-select: none;
+}
+
+.boton-editar {
+    background-color: #6e4db5;
+    color: white;
+}
+
+.boton-editar:hover {
+    background-color: #553b84;
+}
+
+.boton-eliminar {
+    background-color: #d9534f;
+    color: white;
+}
+
+.boton-eliminar:hover {
+    background-color: #c12d23;
+}
+
+/* Formulario de búsqueda */
+.formulario-secundario {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-buscar {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 2px solid #c8b8db;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.input-buscar:focus {
+    border-color: #7a5299;
+    outline: none;
+}
+
+.boton-buscar {
+    background-color: #6e4db5;
+    color: white;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    white-space: nowrap;
+}
+
+.boton-buscar:hover {
+    background-color: #553b84;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .register-form-container {
+        padding: 15px;
+    }
+    .tabla-cuentas {
+        font-size: 0.9rem;
+    }
+}

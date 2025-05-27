@@ -316,20 +316,25 @@ public class AdminDashboardController {
     }
 
     @GetMapping("/admin/wallets")
-    public String manageWallets(@RequestParam(required = false) String userId, Model model) {
+    public String manageWallets(@RequestParam(required = false) String search, Model model) {
         if (!Session.isAdmin()) return "redirect:/login";
 
         SimpleList<Wallet> filteredWallets = new SimpleList<>();
 
-        if (userId != null && !userId.isEmpty()) {
-            User user = nexpay.getUserCRUD().safeRead(userId);
-            if (user != null) {
+        if (search != null && !search.trim().isEmpty()) {
+            // Buscar wallets cuyo ID o userId contenga search (ignorar mayúsculas)
+            for (int i = 0; i < nexpay.getUsers().getSize(); i++) {
+                User user = nexpay.getUsers().get(i);
                 for (WalletNode node : user.getWalletGraph().getWalletNodes()) {
-                    filteredWallets.addLast(node.getWallet());
+                    Wallet wallet = node.getWallet();
+                    if (wallet.getWalletId().toLowerCase().contains(search.toLowerCase()) ||
+                            wallet.getUserId().toLowerCase().contains(search.toLowerCase())) {
+                        filteredWallets.addLast(wallet);
+                    }
                 }
             }
         } else {
-            // Mostrar todos los monederos de todos los usuarios
+            // Mostrar todos si no hay búsqueda
             for (int i = 0; i < nexpay.getUsers().getSize(); i++) {
                 User user = nexpay.getUsers().get(i);
                 for (WalletNode node : user.getWalletGraph().getWalletNodes()) {
@@ -340,10 +345,11 @@ public class AdminDashboardController {
 
         model.addAttribute("wallets", filteredWallets);
         model.addAttribute("users", nexpay.getUsers());
-        model.addAttribute("selectedUserId", userId);
+        model.addAttribute("search", search);
 
         return "admin-wallets";
     }
+
 
 
     @PostMapping("/admin/wallets")
@@ -430,10 +436,3 @@ public class AdminDashboardController {
 
 
 }
-
-
-
-
-
-
-

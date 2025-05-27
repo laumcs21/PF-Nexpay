@@ -1,0 +1,208 @@
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: #f6f6f6;
+    color: #4b2978;
+    min-height: 100vh;
+}
+
+/* Header estilo Bancolombia adaptado a morado */
+.header-nexpay {
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Logo NexPay */
+.logo-nexpay {
+    height: 70px;
+    user-select: none;
+}
+
+/* Navegación horizontal */
+.nav-menu ul {
+    list-style: none;
+    display: flex;
+    gap: 28px;
+}
+
+.nav-menu ul li a {
+    text-decoration: none;
+    color: #4b2978;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 7px 9px;
+    border-radius: 6px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.nav-menu ul li a:hover,
+.nav-menu ul li a.active {
+    background-color: #6e4db5;
+    color: white;
+}
+
+/* Botón cerrar sesión */
+.btn-login-header button {
+    background-color: #9b59b6;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 28px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login-header button:hover {
+    background-color: #7a3299;
+}
+
+/* Main contenedor centrado */
+.main-register-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 70px);
+    padding: 25px;
+}
+
+/* Contenedor de análisis */
+.contenedor-analisis {
+    background: white;
+    padding: 30px 45px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 850px;
+    box-shadow: 0 8px 24px rgba(75, 41, 120, 0.2);
+    text-align: left;
+}
+
+/* Título */
+.titulo {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 28px;
+    color: #4b2978;
+    text-align: center;
+}
+
+/* Resumen estadístico */
+.resumen-estadistico h3 {
+    font-weight: 700;
+    color: #5a3683;
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+}
+
+.resumen-estadistico ul {
+    list-style: none;
+    padding-left: 0;
+    font-size: 1.1rem;
+    color: #4b2978;
+    margin-bottom: 30px;
+}
+
+.resumen-estadistico ul li {
+    margin-bottom: 10px;
+}
+
+/* Tabla de grafos */
+.tabla-grafo {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    font-size: 1rem;
+}
+
+.tabla-grafo thead tr {
+    background-color: #6e4db5;
+    color: white;
+    font-weight: 700;
+    border-radius: 10px;
+}
+
+.tabla-grafo th,
+.tabla-grafo td {
+    padding: 14px 12px;
+    text-align: left;
+}
+
+.tabla-grafo tbody tr {
+    background-color: #f9f7fb;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(75, 41, 120, 0.12);
+    transition: background-color 0.3s ease;
+}
+
+.tabla-grafo tbody tr:hover {
+    background-color: #eae4f6;
+}
+
+/* Lista dentro de tabla */
+.tabla-grafo td ul {
+    padding-left: 18px;
+    margin: 0;
+}
+
+.tabla-grafo td ul li {
+    margin-bottom: 6px;
+}
+
+/* Botón volver */
+.boton-secundario {
+    background-color: transparent;
+    color: #6e4db5;
+    border: 2px solid #6e4db5;
+    font-weight: 700;
+    padding: 12px 0;
+    width: 100%;
+    max-width: 250px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.boton-secundario:hover {
+    background-color: #6e4db5;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .contenedor-analisis {
+        padding: 20px 25px;
+        max-width: 95vw;
+    }
+
+    .titulo {
+        font-size: 1.75rem;
+    }
+
+    .tabla-grafo {
+        font-size: 0.9rem;
+    }
+}

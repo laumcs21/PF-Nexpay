@@ -1,79 +1,125 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Administrar Usuarios - Nexpay</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta charset="UTF-8" />
+    <title>Administrar Usuarios - Nex<!DOCTYPE html>
+        <html xmlns:th="http://www.thymeleaf.org" lang="es">
+        <head>
+        <meta charset="UTF-8" />
+        <title>Administrar Usuarios - Nexpay</title>
+    <link rel="stylesheet" th:href="@{/admin-users.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body class="pagina-admin">
-<div class="contenedor-usuarios">
-    <h2 class="titulo">Gestión de Usuarios</h2>
 
-    <form th:action="@{/admin/user/create}" method="post" class="formulario-crear">
-        <h3>Crear Nuevo Usuario</h3>
-        <input type="text" name="id" placeholder="Cédula (ID)" required>
-        <input type="text" name="name" placeholder="Nombre" required>
-        <input type="email" name="email" placeholder="Correo electrónico" required>
-        <input type="text" name="phone" placeholder="Teléfono" required>
-        <input type="text" name="address" placeholder="Dirección" required>
-        <input type="password" name="password" placeholder="Contraseña" required>
-        <button type="submit" class="boton">Crear Usuario</button>
-    </form>
+<!-- Header con logo y navegación -->
+<header class="header-nexpay">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="/images/logoNexp.png" alt="Nexpay Logo" class="logo-nexpay" />
+        </div>
 
-    <br>
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="#">Gestión de Usuarios</a></li>
+                <li><a href="#">Gestión de Cuentas</a></li>
+                <li><a href="#">Gestión de Monederos</a></li>
+                <li><a href="#">Transacciones</a></li>
+            </ul>
+        </nav>
 
-    <form th:action="@{/admin/users}" method="get" class="formulario-busqueda">
-        <input type="text" name="search" placeholder="Buscar por ID o nombre" th:value="${search}">
-        <button type="submit" class="boton">Buscar</button>
-    </form>
-
-    <br>
-
-    <table class="tabla-usuarios">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>Teléfono</th>
-            <th>Dirección</th>
-            <th>Saldo total</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user : ${users}">
-            <td th:text="${user.id}">ID</td>
-            <td th:text="${user.name}">Nombre</td>
-            <td th:text="${user.email}">Email</td>
-            <td th:text="${user.phone}">Teléfono</td>
-            <td th:text="${user.address}">Dirección</td>
-            <td th:text="${user.totalBalance}">0.0</td>
-            <td>
-                <form th:action="@{/admin/user/edit}" method="get" style="display:inline;">
-                    <input type="hidden" name="id" th:value="${user.id}">
-                    <button type="submit" class="boton">Editar</button>
-                </form>
-
-                <form th:action="@{/admin/user/delete}" method="post" style="display:inline;"
-                      onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?');">
-                    <input type="hidden" name="id" th:value="${user.id}">
-                    <button type="submit" class="boton-rojo">Eliminar</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <br>
-
-    <form th:action="@{/admin-dashboard}" method="get">
-        <button type="submit" class="boton-secundario">Volver al Panel</button>
-    </form>
-
-    <div th:if="${errorMessage}" style="color: red; font-weight: bold;">
-        <p th:text="${errorMessage}"></p>
+        <div class="btn-login-header">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="boton-secundario">Cerrar sesión</button>
+            </form>
+        </div>
     </div>
-</div>
+</header>
+
+<!-- Contenedor principal -->
+<main class="main-register-container">
+    <section class="register-form-container admin-panel">
+        <h2 class="titulo">Gestión de Usuarios</h2>
+
+        <!-- Formulario crear usuario -->
+        <form th:action="@{/admin/user/create}" method="post" class="formulario-crear">
+            <h3>Crear Nuevo Usuario</h3>
+            <input type="text" name="id" placeholder="Cédula (ID)" required />
+            <input type="text" name="name" placeholder="Nombre" required />
+            <input type="email" name="email" placeholder="Correo electrónico" required />
+            <input type="text" name="phone" placeholder="Teléfono" required />
+            <input type="text" name="address" placeholder="Dirección" required />
+            <input type="password" name="password" placeholder="Contraseña" required />
+            <button type="submit" class="boton">Crear Usuario</button>
+        </form>
+
+        <!-- Formulario búsqueda -->
+        <form th:action="@{/admin/users}" method="get" class="formulario-busqueda">
+            <input
+                    type="text"
+                    name="search"
+                    placeholder="Buscar por ID o nombre"
+                    th:value="${search}"
+                    class="input-buscar"
+            />
+            <button type="submit" class="boton-buscar">Buscar</button>
+        </form>
+
+        <!-- Tabla usuarios -->
+        <div class="tabla-usuarios-wrapper">
+            <table class="tabla-usuarios">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Saldo total</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}">ID</td>
+                    <td th:text="${user.name}">Nombre</td>
+                    <td th:text="${user.email}">Email</td>
+                    <td th:text="${user.phone}">Teléfono</td>
+                    <td th:text="${user.address}">Dirección</td>
+                    <td th:text="${user.totalBalance}">0.0</td>
+                    <td class="acciones-td">
+                        <form th:action="@{/admin/user/edit}" method="get" style="display:inline;">
+                            <input type="hidden" name="id" th:value="${user.id}" />
+                            <button type="submit" class="boton-editar">Editar</button>
+                        </form>
+
+                        <form
+                                th:action="@{/admin/user/delete}"
+                                method="post"
+                                style="display:inline;"
+                                onsubmit="return confirm('¿Estás seguro de que deseas eliminar este usuario?');"
+                        >
+                            <input type="hidden" name="id" th:value="${user.id}" />
+                            <button type="submit" class="boton-eliminar">Eliminar</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Botón volver al panel -->
+        <form th:action="@{/admin-dashboard}" method="get" style="margin-top: 20px;">
+            <button type="submit" class="boton-secundario">Volver al Panel</button>
+        </form>
+
+        <!-- Mensaje de error -->
+        <div th:if="${errorMessage}" style="color: red; font-weight: bold; margin-top: 15px;">
+            <p th:text="${errorMessage}"></p>
+        </div>
+    </section>
+</main>
+
 </body>
 </html>
