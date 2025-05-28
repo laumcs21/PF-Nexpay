@@ -1,53 +1,76 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Panel del Usuario - Nexpay</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/user-dashboard.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body class="pagina-usuario">
-<div class="contenedor-dashboard">
 
-    <h3>Monedero actual: <span th:text="${walletName}">Monedero</span></h3>
-    <p>Saldo del monedero: <strong>$<span th:text="${walletBalance}">0.0</span></strong></p>
+<header class="header-nexpay">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="/images/logoNexp.png" alt="Nexpay Logo" class="logo-nexpay" />
+        </div>
 
-    <p>Puntos acumulados: <strong><span th:text="${points}">0</span></strong></p>
-    <p>Rango actual: <strong><span th:text="${rank}">Bronce</span></strong></p>
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="#" th:href="@{/user/accounts}">Mis Cuentas</a></li>
+                <li><a href="#" th:href="@{/user/benefits}">Canje de Puntos</a></li>
+                <!-- Configuración deshabilitado -->
+                <li><a href="#" class="disabled-link">Configuración</a></li>
+            </ul>
+        </nav>
 
+        <div class="btn-login-header">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="boton-secundario">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</header>
 
-    <form th:action="@{/user/accounts}" method="get">
-        <button type="submit" class="boton">Ver Cuentas</button>
-    </form>
+<main class="main-register-container">
+    <section class="contenedor-dashboard">
+        <h3>Monedero actual: <span th:text="${walletName}">Monedero</span></h3>
+        <p>Saldo del monedero: <strong>$<span th:text="${walletBalance}">0.0</span></strong></p>
 
-    <form th:action="@{/user/transactions}" method="get">
-        <button type="submit" class="boton">Historial de Transacciones</button>
-    </form>
+        <p>Puntos acumulados: <strong><span th:text="${points}">0</span></strong></p>
+        <p>Rango actual: <strong><span th:text="${rank}">Bronce</span></strong></p>
 
-    <form th:action="@{/user/transactions/new}" method="get">
-        <button type="submit" class="boton">Realizar Transacción</button>
-    </form>
+        <div class="botones-panel">
+            <form th:action="@{/user/accounts}" method="get">
+                <button type="submit" class="boton">Ver Cuentas</button>
+            </form>
 
-    <form th:action="@{/user/wallets}" method="get">
-        <button type="submit" class="boton-secundario">Cambiar de Monedero</button>
-    </form>
+            <form th:action="@{/user/transactions}" method="get">
+                <button type="submit" class="boton">Historial de Transacciones</button>
+            </form>
 
-    <form th:action="@{/user/benefits}" method="get">
-        <button type="submit" class="boton">Canjear Puntos</button>
-    </form>
-    <form th:action="@{/user/points/history}" method="get">
-        <button type="submit" class="boton">Ver Historial de Puntos</button>
-    </form>
-    <form th:action="@{/user/graph/categories}" method="get">
-        <button type="submit" class="boton">Ver análisis de categorías</button>
-    </form>
+            <form th:action="@{/user/transactions/new}" method="get">
+                <button type="submit" class="boton">Realizar Transacción</button>
+            </form>
 
+            <form th:action="@{/user/wallets}" method="get">
+                <button type="submit" class="boton-secundario">Cambiar de Monedero</button>
+            </form>
 
+            <form th:action="@{/user/benefits}" method="get">
+                <button type="submit" class="boton">Canjear Puntos</button>
+            </form>
 
+            <form th:action="@{/user/points/history}" method="get">
+                <button type="submit" class="boton">Ver Historial de Puntos</button>
+            </form>
 
-    <form th:action="@{/logout}" method="get">
-        <button type="submit" class="boton-secundario">Cerrar Sesión</button>
-    </form>
-</div>
+            <form th:action="@{/user/graph/categories}" method="get">
+                <button type="submit" class="boton">Ver análisis de categorías</button>
+            </form>
+        </div>
+    </section>
+</main>
+
 </body>
 </html>
-

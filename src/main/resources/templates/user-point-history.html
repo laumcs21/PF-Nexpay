@@ -1,34 +1,62 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Point History</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta charset="UTF-8" />
+    <title>Historial de Puntos - Nexpay</title>
+    <link rel="stylesheet" th:href="@{/user-point-history.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body class="pagina-usuario">
-<div class="contenedor-historial">
-    <h2 class="titulo">Historial de Puntos</h2>
 
-    <table class="tabla-historial">
-        <thead>
-        <tr>
-            <th>Fecha</th>
-            <th>Descripción</th>
-            <th>Puntos</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="entry : ${history}">
-            <td th:text="${entry.date}">2025-05-25</td>
-            <td th:text="${entry.description}">Transaction DEPOSITO</td>
-            <td th:text="${entry.points}">+10</td>
-        </tr>
-        </tbody>
-    </table>
+<header class="header-nexpay">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="/images/logoNexp.png" alt="Nexpay Logo" class="logo-nexpay" />
+        </div>
 
-    <form th:action="@{/dashboard}" method="get">
-        <button type="submit" class="boton-secundario">Volver al Panel</button>
-    </form>
-</div>
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#" th:href="@{/dashboard}">Inicio</a></li>
+                <li><a href="#" th:href="@{/user/accounts}">Mis Cuentas</a></li>
+                <li><a href="#" class="active" th:href="@{/user/points/history}">Historial de Puntos</a></li>
+                <li><a href="#" th:href="@{/user/benefits}">Canje de Puntos</a></li>
+            </ul>
+        </nav>
+
+        <div class="btn-login-header">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="boton-secundario">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<main class="main-register-container">
+    <section class="contenedor-historial">
+        <h2 class="titulo">Historial de Puntos</h2>
+
+        <table class="tabla-historial">
+            <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Descripción</th>
+                <th>Puntos</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="entry : ${history}">
+                <td th:text="${entry.date}">2025-05-25</td>
+                <td th:text="${entry.description}">Transacción DEPOSITO</td>
+                <td th:text="${entry.points}">+10</td>
+            </tr>
+            </tbody>
+        </table>
+
+        <form th:action="@{/dashboard}" method="get">
+            <button type="submit" class="boton-secundario">Volver al Panel</button>
+        </form>
+    </section>
+</main>
+
 </body>
 </html>

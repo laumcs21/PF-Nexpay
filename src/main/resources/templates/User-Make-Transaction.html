@@ -1,63 +1,87 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Realizar Transacción - Nexpay</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/user-make-transaction.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body class="pagina-usuario">
-<div class="contenedor-formulario">
-    <h2 class="titulo">Realizar Transacción</h2>
 
-    <p th:if="${errorMessage}" class="mensaje-error" th:text="${errorMessage}"></p>
-    <p th:if="${successMessage}" class="mensaje-exito" th:text="${successMessage}"></p>
-
-    <form th:action="@{/user/transactions}" method="post">
-        <label>Cuenta de Origen:</label>
-        <select name="sourceAccountNumber" required>
-            <option th:each="acc : ${accounts}"
-                    th:value="${acc.accountNumber}"
-                    th:text="${acc.bankName + ' - ' + acc.accountNumber}">
-            </option>
-        </select>
-
-        <label>Cuenta de Destino (si aplica):</label>
-        <input type="text" name="destinationAccountNumber" placeholder="Opcional">
-
-        <label>Monto:</label>
-        <input type="number" step="0.01" name="amount" required>
-
-        <label>Tipo de Transacción:</label>
-        <select name="type" required>
-            <option value="DEPOSITO">Depósito</option>
-            <option value="RETIRO">Retiro</option>
-            <option value="TRANSFERENCIA">Transferencia</option>
-        </select>
-
-        <label>Descripción:</label>
-        <input type="text" name="description" placeholder="Opcional">
-
-        <!-- Checkbox para programar transacción -->
-        <label>
-            <input type="checkbox" id="programmedCheckbox" onchange="toggleScheduledDate()">
-            Programar transacción
-        </label>
-
-        <!-- Campo de fecha programada que se muestra solo si se marca el checkbox -->
-        <div id="scheduledDateContainer" style="display: none;">
-            <label>Fecha programada:</label>
-            <input type="datetime-local" name="scheduledDate">
+<header class="header-nexpay">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="/images/logoNexp.png" alt="Nexpay Logo" class="logo-nexpay" />
         </div>
 
-        <button type="submit" class="boton">Realizar Transacción</button>
-    </form>
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#" th:href="@{/dashboard}">Inicio</a></li>
+                <li><a href="#" th:href="@{/user/accounts}">Mis Cuentas</a></li>
+                <li><a href="#" th:href="@{/user/transactions}">Transacciones</a></li>
+                <li><a href="#" th:href="@{/user/benefits}">Canje de Puntos</a></li>
+            </ul>
+        </nav>
 
-    <br>
+        <div class="btn-login-header">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="boton-secundario">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</header>
 
-    <form th:action="@{/dashboard}" method="get">
-        <button type="submit" class="boton-secundario">Volver al Panel</button>
-    </form>
-</div>
+<main class="main-register-container">
+    <section class="contenedor-formulario">
+        <h2 class="titulo">Realizar Transacción</h2>
+
+        <p th:if="${errorMessage}" class="mensaje-error" th:text="${errorMessage}"></p>
+        <p th:if="${successMessage}" class="mensaje-exito" th:text="${successMessage}"></p>
+
+        <form th:action="@{/user/transactions}" method="post">
+            <label for="sourceAccountNumber">Cuenta de Origen:</label>
+            <select name="sourceAccountNumber" id="sourceAccountNumber" required>
+                <option th:each="acc : ${accounts}"
+                        th:value="${acc.accountNumber}"
+                        th:text="${acc.bankName + ' - ' + acc.accountNumber}">
+                </option>
+            </select>
+
+            <label for="destinationAccountNumber">Cuenta de Destino (si aplica):</label>
+            <input type="text" id="destinationAccountNumber" name="destinationAccountNumber" placeholder="Opcional" />
+
+            <label for="amount">Monto:</label>
+            <input type="number" id="amount" step="0.01" name="amount" required />
+
+            <label for="type">Tipo de Transacción:</label>
+            <select name="type" id="type" required>
+                <option value="DEPOSITO">Depósito</option>
+                <option value="RETIRO">Retiro</option>
+                <option value="TRANSFERENCIA">Transferencia</option>
+            </select>
+
+            <label for="description">Descripción:</label>
+            <input type="text" id="description" name="description" placeholder="Opcional" />
+
+            <label class="checkbox-label">
+                <input type="checkbox" id="programmedCheckbox" onchange="toggleScheduledDate()">
+                Programar transacción
+            </label>
+
+
+            <div id="scheduledDateContainer" style="display: none;">
+                <label for="scheduledDate">Fecha programada:</label>
+                <input type="datetime-local" id="scheduledDate" name="scheduledDate" />
+            </div>
+
+            <button type="submit" class="boton">Realizar Transacción</button>
+        </form>
+
+        <form th:action="@{/dashboard}" method="get" style="margin-top: 20px;">
+            <button type="submit" class="boton-secundario">Volver al Panel</button>
+        </form>
+    </section>
+</main>
 
 <script>
     function toggleScheduledDate() {
@@ -69,4 +93,3 @@
 
 </body>
 </html>
-

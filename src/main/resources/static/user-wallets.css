@@ -1,0 +1,251 @@
+/* Reset básico */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background: #f6f6f6;
+    color: #4b2978;
+    min-height: 100vh;
+}
+
+/* Header estilo Bancolombia adaptado a morado */
+.header-nexpay {
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 0 40px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Logo NexPay */
+.logo-nexpay {
+    height: 70px;
+    user-select: none;
+}
+
+/* Navegación horizontal - solo estilos, no acción */
+.nav-menu ul {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-menu ul li a {
+    text-decoration: none;
+    color: #4b2978;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: default; /* inhabilita pointer */
+    pointer-events: none; /* no clickeable */
+    user-select: none;
+}
+
+/* Solo para el link activo, para que destaque visualmente pero sin acción */
+.nav-menu ul li a.active {
+    background-color: #6e4db5;
+    color: white;
+    cursor: default;
+}
+
+/* Botón cerrar sesión */
+.btn-login-header button {
+    background-color: #9b59b6;
+    border: none;
+    border-radius: 25px;
+    padding: 10px 28px;
+    font-weight: 700;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.btn-login-header button:hover {
+    background-color: #7a3299;
+}
+
+/* Main contenedor centrado */
+.main-register-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: calc(100vh - 70px);
+    padding: 25px;
+}
+
+/* Contenedor general */
+.contenedor-monedero {
+    background: white;
+    padding: 30px 45px;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 900px;
+    box-shadow: 0 8px 24px rgba(75, 41, 120, 0.2);
+    text-align: left;
+}
+
+/* Títulos */
+.titulo {
+    font-size: 2.25rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+    color: #4b2978;
+    text-align: center;
+}
+
+.saldo-total {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Formularios */
+.formulario-crear h3 {
+    margin-bottom: 18px;
+    color: #5a3683;
+}
+
+.formulario-crear label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #5a3683;
+    font-size: 1rem;
+}
+
+.formulario-crear input {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #c8b8db;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.formulario-crear input:focus {
+    border-color: #7a5299;
+    outline: none;
+}
+
+/* Botones */
+.boton {
+    background-color: #6e4db5;
+    color: white;
+    font-weight: 700;
+    padding: 12px 0;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.boton:hover {
+    background-color: #553b84;
+}
+
+/* Tabla Monedero */
+.tabla-monedero {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 12px;
+    font-size: 1rem;
+}
+
+.tabla-monedero thead tr {
+    background-color: #6e4db5;
+    color: white;
+    font-weight: 700;
+    border-radius: 10px;
+}
+
+.tabla-monedero th,
+.tabla-monedero td {
+    padding: 14px 12px;
+    text-align: left;
+}
+
+.tabla-monedero tbody tr {
+    background-color: #f9f7fb;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(75, 41, 120, 0.12);
+    transition: background-color 0.3s ease;
+}
+
+.tabla-monedero tbody tr:hover {
+    background-color: #eae4f6;
+}
+
+/* Acciones en tabla */
+.acciones-td {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Botones en tabla: Ingresar y Eliminar */
+.boton {
+    min-width: 100px;
+    padding: 10px 0;
+}
+
+.boton-secundario {
+    background-color: transparent;
+    color: #6e4db5;
+    border: 2px solid #6e4db5;
+    font-weight: 700;
+    padding: 10px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    min-width: 100px;
+    text-align: center;
+}
+
+.boton-secundario:hover {
+    background-color: #6e4db5;
+    color: white;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    .contenedor-monedero {
+        padding: 20px 25px;
+        max-width: 95vw;
+    }
+
+    .titulo {
+        font-size: 1.75rem;
+    }
+
+    .tabla-monedero {
+        font-size: 0.9rem;
+    }
+
+    .boton,
+    .boton-secundario {
+        font-size: 1rem;
+        padding: 10px 0;
+    }
+}

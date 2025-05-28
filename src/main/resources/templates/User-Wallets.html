@@ -1,50 +1,80 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Mis Monederos</title>
-    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <meta charset="UTF-8" />
+    <title>Mis Monederos - Nexpay</title>
+    <link rel="stylesheet" th:href="@{/user-wallets.css}" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
-<body>
-<div class="contenedor">
-    <h2 class="titulo">¡Bienvenido, <span th:text="${name}">Usuario</span>!</h2>
-    <p>Saldo total: <strong>$<span th:text="${totalBalance}">0.0</span></strong></p>
-    <h2>Mis Monederos</h2>
+<body class="pagina-usuario">
 
-    <form th:action="@{/user/wallets}" method="post">
-        <h3>Crear nuevo monedero</h3>
-        <label>Nombre del Monedero:</label>
-        <input type="text" name="name" required>
-        <button type="submit">Crear</button>
-    </form>
+<header class="header-nexpay">
+    <div class="header-container">
+        <div class="logo-container">
+            <img src="/images/logoNexp.png" alt="Nexpay Logo" class="logo-nexpay" />
+        </div>
 
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Saldo</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="wallet : ${wallets}">
-            <td th:text="${wallet.wallet.walletId}">ID</td>
-            <td th:text="${wallet.wallet.name}">Nombre</td>
-            <td th:text="${wallet.wallet.balance}">Saldo</td>
-            <td>
-                <form th:action="@{/user/wallet/access}" method="get" style="display:inline">
-                    <input type="hidden" name="walletId" th:value="${wallet.wallet.walletId}" />
-                    <button type="submit">Ingresar</button>
-                </form>
-                <form th:action="@{/user/wallet/delete}" method="post" style="display:inline">
-                    <input type="hidden" name="walletId" th:value="${wallet.wallet.walletId}" />
-                    <button type="submit" class="boton-secundario">Eliminar</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+        <nav class="nav-menu">
+            <ul>
+                <!-- Links deshabilitados con cursor default y sin acción -->
+                <li><a href="#" class="active">Inicio</a></li>
+                <li><a href="#">Mis Cuentas</a></li>
+                <li><a href="#">Mis Monederos</a></li>
+                <li><a href="#">Canje de Puntos</a></li>
+                <li><a href="#">Configuración</a></li>
+            </ul>
+        </nav>
+
+        <div class="btn-login-header">
+            <form th:action="@{/logout}" method="get">
+                <button type="submit" class="boton-secundario">Cerrar sesión</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<main class="main-register-container">
+    <section class="contenedor-monedero">
+        <h2 class="titulo">¡Bienvenido, <span th:text="${name}">Usuario</span>!</h2>
+        <p class="saldo-total">Saldo total: <strong>$<span th:text="${totalBalance}">0.0</span></strong></p>
+
+        <form th:action="@{/user/wallets}" method="post" class="formulario-crear">
+            <h3>Crear nuevo monedero</h3>
+            <label for="walletName">Nombre del Monedero:</label>
+            <input type="text" id="walletName" name="name" required />
+            <button type="submit" class="boton">Crear</button>
+        </form>
+
+        <table class="tabla-monedero">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Saldo</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="wallet : ${wallets}">
+                <td th:text="${wallet.wallet.walletId}">ID</td>
+                <td th:text="${wallet.wallet.name}">Nombre</td>
+                <td th:text="${wallet.wallet.balance}">Saldo</td>
+                <td class="acciones-td">
+                    <form th:action="@{/user/wallet/access}" method="get" style="display:inline;">
+                        <input type="hidden" name="walletId" th:value="${wallet.wallet.walletId}" />
+                        <button type="submit" class="boton">Ingresar</button>
+                    </form>
+                    <form th:action="@{/user/wallet/delete}" method="post" style="display:inline; margin-left: 8px;">
+                        <input type="hidden" name="walletId" th:value="${wallet.wallet.walletId}" />
+                        <button type="submit" class="boton-secundario"
+                                onclick="return confirm('¿Estás seguro de que deseas eliminar este monedero?');">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</main>
+
 </body>
 </html>
