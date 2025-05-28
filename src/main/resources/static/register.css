@@ -12,7 +12,7 @@ body {
     min-height: 100vh;
 }
 
-/* Header estilo Bancolombia adaptado a morado */
+
 .header-nexpay {
     background-color: white;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
@@ -31,13 +31,13 @@ body {
     justify-content: space-between;
 }
 
-/* Logo NexPay */
+
 .logo-nexpay {
     height: 70px;
     user-select: none;
 }
 
-/* Navegación horizontal */
+
 .nav-menu ul {
     list-style: none;
     display: flex;
@@ -57,7 +57,7 @@ body {
     color: #6e4db5;
 }
 
-/* Botón trámites digital estilo similar a Bancolombia */
+
 .btn-tramites {
     background-color: #6e4db5;
     color: white !important;
@@ -71,9 +71,9 @@ body {
     background-color: #553b84;
 }
 
-/* Botón entrar en header */
+
 .btn-login-header button {
-    background-color: #ffd400; /* Amarillo parecido Bancolombia */
+    background-color: #ffd400;
     border: none;
     border-radius: 20px;
     padding: 10px 24px;
@@ -97,7 +97,7 @@ body {
     padding: 20px;
 }
 
-/* Contenedor formulario registro */
+
 .register-form-container {
     background: white;
     padding: 20px 40px;
@@ -120,10 +120,10 @@ body {
     color: #6e4db5;
 }
 
-/* Labels formulario */
+
 .formulario label {
     display: block;
-    margin-bottom: 1px;  /* Reducido el margen */
+    margin-bottom: 1px;
     font-weight: 600;
     color: #5a3683;
     text-align: left;
@@ -133,8 +133,8 @@ body {
 /* Inputs */
 .formulario input {
     width: 100%;
-    padding: 6px 10px;  /* Padding reducido */
-    margin-bottom: 6px;  /* Reducido aún más el espacio entre los campos */
+    padding: 6px 10px;
+    margin-bottom: 6px;
     border: 2px solid #c8b8db;
     border-radius: 8px;
     font-size: 1rem;

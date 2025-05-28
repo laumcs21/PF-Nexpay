@@ -8,7 +8,6 @@
 </head>
 <body class="pagina-admin">
 
-<!-- Header con logo y navegación -->
 <header class="header-nexpay">
     <div class="header-container">
         <div class="logo-container">
@@ -33,12 +32,12 @@
     </div>
 </header>
 
-<!-- Contenedor principal -->
+
 <main class="main-register-container">
     <section class="register-form-container admin-panel">
         <h2 class="titulo">Gestión de Transacciones</h2>
 
-        <!-- Formulario creación -->
+
         <form th:action="@{/admin/transactions}" method="post" class="formulario">
             <label for="userId">ID Usuario:</label>
             <input type="text" id="userId" name="userId" required />
@@ -65,7 +64,7 @@
             <button type="submit" class="boton">Ejecutar Transacción</button>
         </form>
 
-        <!-- Formulario búsqueda -->
+
         <form th:action="@{/admin/transactions}" method="get" class="formulario-secundario">
             <input
                     type="text"
@@ -77,7 +76,7 @@
             <button type="submit" class="boton-buscar">Buscar</button>
         </form>
 
-        <!-- Tabla de transacciones -->
+
         <table class="tabla-cuentas">
             <thead>
             <tr>
@@ -105,17 +104,17 @@
             </tbody>
         </table>
 
-        <!-- Botón revertir última transacción -->
+
         <form th:action="@{/admin/transactions/undo}" method="post" style="margin-top: 20px;">
             <button type="submit" class="boton-secundario">Revertir Última Transacción</button>
         </form>
 
-        <!-- Botón volver al panel -->
+
         <form th:action="@{/admin-dashboard}" method="get" style="margin-top: 20px;">
             <button type="submit" class="boton-secundario">Volver al Panel</button>
         </form>
 
-        <!-- Mensaje de error -->
+
         <div th:if="${errorMessage}" style="color: red; font-weight: bold; margin-top: 15px;">
             <p th:text="${errorMessage}"></p>
         </div>

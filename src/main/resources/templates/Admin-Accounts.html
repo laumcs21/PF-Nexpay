@@ -8,7 +8,7 @@
 </head>
 <body>
 
-<!-- Header con logo y navegación -->
+
 <header class="header-nexpay">
     <div class="header-container">
         <div class="logo-container">
@@ -30,17 +30,17 @@
     </div>
 </header>
 
-<!-- Main contenedor de gestión de cuentas -->
+
 <main class="main-register-container">
     <section class="register-form-container">
         <h2 class="titulo">Gestión de Cuentas</h2>
 
-        <!-- Mensaje de error -->
+
         <div th:if="${param.error != null and param.error[0] == 'userNotFound'}" class="error">
             Error: El usuario no está registrado.
         </div>
 
-        <!-- Formulario para crear cuenta -->
+
         <h3>Crear nueva cuenta</h3>
         <form th:action="@{/admin/accounts}" method="post" class="formulario">
             <label for="userId">ID Usuario:</label>
@@ -70,7 +70,7 @@
             <button type="submit" class="boton">Crear Cuenta</button>
         </form>
 
-        <!-- Formulario de búsqueda -->
+
         <form th:action="@{/admin/accounts}" method="get" class="formulario-secundario">
             <input
                     type="text"
@@ -82,7 +82,7 @@
             <button type="submit" class="boton-buscar">Buscar</button>
         </form>
 
-        <!-- Tabla de cuentas -->
+
         <table class="tabla-cuentas">
             <thead>
             <tr>
@@ -116,7 +116,7 @@
             </tbody>
         </table>
 
-        <!-- Formulario para editar cuenta -->
+
         <div id="form-editar-cuenta" th:if="${accountToEdit != null}">
             <h3>Editar Cuenta</h3>
             <form th:action="@{/admin/account/update}" method="post" th:object="${accountToEdit}" class="formulario">
@@ -151,7 +151,7 @@
             </form>
         </div>
 
-        <!-- Botón para volver al panel -->
+
         <form th:action="@{/admin-dashboard}" method="get">
             <button type="submit" class="boton-secundario">Volver al Panel</button>
         </form>
@@ -160,7 +160,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // Al hacer clic en editar, cambia url con editId y hace scroll al formulario edición
+
         document.querySelectorAll('.boton-editar').forEach((boton) => {
             boton.addEventListener('click', (e) => {
                 e.preventDefault();

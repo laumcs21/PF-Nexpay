@@ -83,7 +83,7 @@
                 <td th:text="${account.balance}">0.0</td>
                 <td class="acciones-td">
                     <form th:action="@{/user/account/delete}" method="post" style="display:inline;"
-                          onsubmit="return confirm('¿Deseas eliminar esta cuenta?');">
+                          onsubmit="return handleDelete(event);">
                         <input type="hidden" name="id" th:value="${account.id}" />
                         <button type="submit" class="boton-rojo">Eliminar</button>
                     </form>
@@ -124,6 +124,19 @@
         </form>
     </section>
 </main>
+
+<script>
+    function handleDelete(event) {
+        if (!confirm('¿Deseas eliminar esta cuenta?')) {
+            event.preventDefault();
+            return false;
+        }
+        setTimeout(() => {
+            location.reload();
+        }, 1000);
+        return true;
+    }
+</script>
 
 </body>
 </html>

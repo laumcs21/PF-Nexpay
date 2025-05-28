@@ -1,4 +1,4 @@
-/* Reset básico */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -12,7 +12,7 @@ body {
     min-height: 100vh;
 }
 
-/* Header morado con sombra */
+
 .header-nexpay {
     background-color: #fff;
     box-shadow: 0 3px 10px rgba(75, 41, 120, 0.15);

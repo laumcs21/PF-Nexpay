@@ -12,7 +12,7 @@ body {
     min-height: 100vh;
 }
 
-/* Header estilo Bancolombia adaptado a morado */
+
 .header-nexpay {
     background-color: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -37,7 +37,7 @@ body {
     user-select: none;
 }
 
-/* Navegación horizontal - solo estilos, no acción */
+
 .nav-menu ul {
     list-style: none;
     display: flex;
@@ -51,12 +51,12 @@ body {
     font-size: 1rem;
     padding: 8px 10px;
     border-radius: 6px;
-    cursor: default; /* inhabilita pointer */
-    pointer-events: none; /* no clickeable */
+    cursor: default;
+    pointer-events: none;
     user-select: none;
 }
 
-/* Solo para el link activo, para que destaque visualmente pero sin acción */
+
 .nav-menu ul li a.active {
     background-color: #6e4db5;
     color: white;
@@ -80,7 +80,7 @@ body {
     background-color: #7a3299;
 }
 
-/* Main contenedor centrado */
+
 .main-register-container {
     display: flex;
     justify-content: center;
@@ -89,7 +89,7 @@ body {
     padding: 25px;
 }
 
-/* Contenedor general */
+
 .contenedor-monedero {
     background: white;
     padding: 30px 45px;

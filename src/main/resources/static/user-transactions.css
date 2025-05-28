@@ -1,4 +1,4 @@
-/* Reset básico */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -12,7 +12,7 @@ body {
     min-height: 100vh;
 }
 
-/* Header estilo Bancolombia adaptado a morado */
+
 .header-nexpay {
     background-color: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -31,7 +31,7 @@ body {
     justify-content: space-between;
 }
 
-/* Logo NexPay */
+
 .logo-nexpay {
     height: 70px;
     user-select: none;

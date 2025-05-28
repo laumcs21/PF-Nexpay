@@ -8,7 +8,7 @@
 </head>
 <body class="pagina-admin">
 
-<!-- Header con logo y navegación -->
+
 <header class="header-nexpay">
     <div class="header-container">
         <div class="logo-container">
@@ -33,12 +33,12 @@
     </div>
 </header>
 
-<!-- Contenedor principal -->
+
 <main class="main-register-container">
     <section class="register-form-container admin-panel">
         <h2 class="titulo">Monederos Registrados</h2>
 
-        <!-- Formulario creación -->
+
         <form th:action="@{/admin/wallets}" method="post" class="formulario-crear">
             <h3>Crear nuevo monedero</h3>
             <label for="userId">Cédula del Usuario:</label>
@@ -52,7 +52,7 @@
 
         <hr style="margin: 30px 0;" />
 
-        <!-- Formulario búsqueda -->
+
         <form th:action="@{/admin/wallets}" method="get" class="formulario-busqueda">
             <input
                     type="text"
@@ -64,7 +64,7 @@
             <button type="submit" class="boton-buscar">Buscar</button>
         </form>
 
-        <!-- Tabla wallets -->
+
         <div class="tabla-usuarios-wrapper">
             <table class="tabla-usuarios">
                 <thead>
@@ -95,7 +95,7 @@
             </table>
         </div>
 
-        <!-- Formulario editar -->
+
         <div th:if="${walletToEdit != null}" style="margin-top: 30px;">
             <h3>Editar Monedero</h3>
             <form th:action="@{/admin/wallet/update}" method="post" th:object="${walletToEdit}" class="formulario">
