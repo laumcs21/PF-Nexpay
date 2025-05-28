@@ -12,7 +12,6 @@ body {
     min-height: 100vh;
 }
 
-
 .header-nexpay {
     background-color: white;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -217,10 +216,10 @@ body {
     gap: 10px;
 }
 
-/* Botones editar y eliminar */
+/* Botones editar y eliminar con tamaño y tipografía iguales */
 .boton-editar,
 .boton-rojo {
-    padding: 8px 16px;
+    padding: 10px 20px;
     border-radius: 8px;
     font-weight: 700;
     font-size: 1rem;
@@ -228,6 +227,9 @@ body {
     border: none;
     transition: background-color 0.3s ease, color 0.3s ease;
     user-select: none;
+    display: inline-block;
+    min-width: 90px;
+    text-align: center;
 }
 
 .boton-editar {
@@ -262,7 +264,6 @@ body {
     margin-bottom: 15px;
     text-align: center;
 }
-
 
 @media (max-width: 480px) {
     .contenedor-cuentas {

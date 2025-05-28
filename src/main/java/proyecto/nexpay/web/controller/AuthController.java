@@ -86,5 +86,6 @@ public class AuthController {
         Session.setSelectedWalletId(null);
         return "redirect:/login";
     }
+
 }
 

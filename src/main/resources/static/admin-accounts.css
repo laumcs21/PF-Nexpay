@@ -1,4 +1,3 @@
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -11,7 +10,6 @@ body {
     color: #4b2978;
     min-height: 100vh;
 }
-
 
 .header-nexpay {
     background-color: white;
@@ -92,6 +90,9 @@ body {
     max-width: 900px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     text-align: center;
+
+    /* Controla que contenido ancho no salga */
+    overflow-x: auto;
 }
 
 /* Título */
@@ -168,8 +169,14 @@ body {
 }
 
 /* Tabla de cuentas */
+.tabla-container {
+    width: 100%;
+    overflow-x: auto; /* scroll horizontal si tabla ancha */
+}
+
 .tabla-cuentas {
     width: 100%;
+    max-width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
 }
@@ -179,6 +186,8 @@ body {
     padding: 12px 10px;
     border: 1px solid #ddd;
     text-align: center;
+    max-width: 150px;
+    word-wrap: break-word;
 }
 
 .acciones-td {
